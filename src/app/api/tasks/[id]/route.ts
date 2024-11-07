@@ -37,6 +37,8 @@ export async function DELETE(
 ) {
   const { id } = params;
 
+  loadTasks();
+
   const updatedTasks = tasks.filter((task) => task.id !== parseInt(id));
 
   saveTasks(updatedTasks);

@@ -34,6 +34,7 @@ const saveTasks = () => {
 // get request
 export async function GET() {
   try {
+    loadTasks();
     return new Response(JSON.stringify(tasks), {
       headers: {
         "Content-Type": "application/json",
