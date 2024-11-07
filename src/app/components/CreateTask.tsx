@@ -3,11 +3,11 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import { type Task } from "../page";
 
-type addTaskAction = {
+type createTaskProps = {
   addTaskAction: (task: Task) => void;
 };
 
-export default function CreateTask({ addTaskAction }: addTaskAction) {
+export default function CreateTask({ addTaskAction }: createTaskProps) {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [type, setType] = useState<string>("");
@@ -30,15 +30,15 @@ export default function CreateTask({ addTaskAction }: addTaskAction) {
   };
 
   const handleChange =
-    (setter: (value: string) => void) =>
+    (set: (value: string) => void) =>
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-      setter(e.target.value);
+      set(e.target.value);
     };
 
   return (
-    <div className="container w-3/4 m-auto p-4">
+    <div className="container w-2/4 m-auto p-4">
       <form onSubmit={createTask}>
         <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
           <h2 className="text-xl font-medium text-center">Create Task</h2>
@@ -46,18 +46,24 @@ export default function CreateTask({ addTaskAction }: addTaskAction) {
             type="text"
             name="title"
             required
+            placeholder="Title"
+            value={title}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
             onChange={handleChange(setTitle)}
           />
           <textarea
             name="description"
             required
+            placeholder="Description"
+            value={description}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
             onChange={handleChange(setDescription)}
           ></textarea>
           <input
             type="text"
             name="type"
+            value={type}
+            placeholder="Type"
             required
             onChange={handleChange(setType)}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
@@ -65,6 +71,8 @@ export default function CreateTask({ addTaskAction }: addTaskAction) {
           <input
             type="date"
             name="createdOn"
+            value={createdOn}
+            placeholder="Created On"
             required
             onChange={handleChange(setCreatedOn)}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
