@@ -1,35 +1,17 @@
-"use client";
-import CreateTask from "./components/CreateTask";
-import DisplayTask from "./components/DisplayTask";
-import { useState } from "react";
-
-// Define a type for the task data
-export type Task = {
-  title: string;
-  description: string;
-  type: string;
-  createdOn: string;
-  status: string;
-};
+import Link from "next/link";
 
 export default function Home() {
-  const [updateTasks, setUpdateTasks] = useState<Task | undefined>();
-
-  const addTaskAction = async (task: Task) => {
-    const res = await fetch("http://localhost:3000/api/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ task }),
-    });
-
-    const updateTasks: Task = await res.json();
-    setUpdateTasks(updateTasks);
-  };
-
   return (
-    <div>
-      <CreateTask addTaskAction={addTaskAction} />
-      <DisplayTask updateTasks={updateTasks} />
+    <div className="container mx-auto mt-2 w-2/4 p-4 drop-shadow bg-slate-100">
+      <Link
+        href="/createtask"
+        className="p-2 me-2 font-bold hover:text-sky-600"
+      >
+        Create Task
+      </Link>
+      <Link href="tasklist" className="p-2 me-2 font-bold hover:text-sky-600">
+        Task List
+      </Link>
     </div>
   );
 }

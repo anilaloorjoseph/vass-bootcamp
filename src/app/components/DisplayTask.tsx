@@ -1,12 +1,9 @@
+"use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { type Task } from "../page";
 import { MdDelete } from "react-icons/md";
 
-type DisplayTaskProps = {
-  updateTasks: Task;
-};
-
-export default function DisplayTask({ updateTasks }: DisplayTaskProps) {
+export default function DisplayTask() {
   const [tasks, setTasks] = useState([]);
   const [deleted, setDeleted] = useState<string>("");
 
@@ -34,24 +31,22 @@ export default function DisplayTask({ updateTasks }: DisplayTaskProps) {
       setTasks(data);
     };
     getTasks();
-  }, [updateTasks, deleted]);
+  }, [deleted]);
 
   return (
     <div className="w-2/4 mx-auto p-4">
       <p className="font-bold text-center py-4">Tasks</p>
-      <hr />
+
       {tasks &&
         tasks
           .slice()
           .reverse()
           .map(({ id, task }, index) => (
-            <div key={id} className=" bg-slate-50 drop-shadow-md p-4 my-2">
+            <div key={index} className=" bg-slate-50 drop-shadow-md p-4 my-2">
               <div className="flex justify-between mb-2">
-                <h4 className="font-semibold">
-                  <small className="font-bold">Title:</small>
-                  <br />
-                  {task?.title}
-                </h4>
+                <Link href={`/taskdetails/${id}`} className="text-blue-600">
+                  <h4 className="font-semibold">{task?.title}</h4>
+                </Link>
                 <p>
                   <small>Type:</small>
                   <br />

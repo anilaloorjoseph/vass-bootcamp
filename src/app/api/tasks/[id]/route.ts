@@ -50,3 +50,21 @@ export async function DELETE(
     status: 201,
   });
 }
+
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+
+  loadTasks();
+
+  const taskDetails = tasks.find((task) => task.id === parseInt(id));
+
+  return new Response(JSON.stringify(taskDetails), {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    status: 201,
+  });
+}

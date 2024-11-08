@@ -1,7 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useState, FormEvent, ChangeEvent } from "react";
-import { type Task } from "../page";
+import { type Task } from "../types/transcript";
 
 type createTaskProps = {
   addTaskAction: (task: Task) => void;
@@ -23,7 +22,7 @@ export default function CreateTask({ addTaskAction }: createTaskProps) {
   });
 
   return (
-    <div className="container w-2/4 m-auto p-4">
+    <div className="container w-2/4 m-auto">
       <form
         onSubmit={handleSubmit((data) => {
           addTaskAction(data);
