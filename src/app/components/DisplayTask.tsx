@@ -1,37 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
+import { useTasks } from "../context/useContext";
 
 export default function DisplayTask() {
-  const [tasks, setTasks] = useState([]);
-  const [deleted, setDeleted] = useState<string>("");
-
-  const deleteTask = async (deleteId: string) => {
-    const res = await fetch(`http://localhost:3000/api/tasks/${deleteId}`, {
-      method: "DELETE",
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-
-      setDeleted(data);
-    } else {
-      console.log("Failed to delete the task!");
-    }
-  };
-
-  useEffect(() => {
-    const getTasks = async () => {
-      const res = await fetch("http://localhost:3000/api/tasks");
-      if (!res.ok) {
-        throw new Error(`Network response was not ok: ${res.statusText}`);
-      }
-      const data = await res.json();
-      setTasks(data);
-    };
-    getTasks();
-  }, [deleted]);
+  const { tasks, deleteTask } = useTasks();
 
   return (
     <div className="w-2/4 mx-auto p-4">
@@ -41,37 +14,40 @@ export default function DisplayTask() {
         tasks
           .slice()
           .reverse()
-          .map(({ id, task }, index) => (
+          .map((value, index) => (
             <div key={index} className=" bg-slate-50 drop-shadow-md p-4 my-2">
               <div className="flex justify-between mb-2">
-                <Link href={`/taskdetails/${id}`} className="text-blue-600">
-                  <h4 className="font-semibold">{task?.title}</h4>
+                <Link
+                  href={`/taskdetails/${value?.id}`}
+                  className="text-blue-600"
+                >
+                  <h4 className="font-semibold">{value?.title}</h4>
                 </Link>
                 <p>
                   <small>Type:</small>
                   <br />
-                  {task?.type}
+                  {value?.type}
                 </p>
                 <p>
                   <small>Status:</small>
                   <br />
-                  {task?.status}
+                  {value?.status}
                 </p>
               </div>
               <div className="flex justify-between">
                 <p>
                   <small>Description:</small>
                   <br />
-                  {task?.description}
+                  {value?.description}
                 </p>
                 <p>
                   <small>Created on:</small>
                   <br />
-                  {task?.createdOn}
+                  {value?.createdOn}
                 </p>
                 <p className="flex  items-end">
                   <small
-                    onClick={() => deleteTask(id)}
+                    onClick={() => deleteTask(value?.id)}
                     className="flex items-center text-red-500 font-semibold cursor-pointer"
                   >
                     Delete <MdDelete />

@@ -1,18 +1,20 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { type Task } from "../types/transcript";
+import { useTasks } from "../context/useContext";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
-type createTaskProps = {
-  addTaskAction: (task: Task) => void;
-};
+export default function CreateTask() {
+  const { tasks, addTask } = useTasks();
+  const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
 
-export default function CreateTask({ addTaskAction }: createTaskProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
+      id: 0,
       title: "",
       description: "",
       type: "",
@@ -21,11 +23,19 @@ export default function CreateTask({ addTaskAction }: createTaskProps) {
     },
   });
 
+  useEffect(() => {
+    setTimeout(() => {
+      setTasksUpdated(false);
+    }, 4000);
+  }, [tasksUpdated]);
+
   return (
     <div className="container w-2/4 m-auto">
       <form
         onSubmit={handleSubmit((data) => {
-          addTaskAction(data);
+          let taskId = addTask(data);
+          console.log(taskId);
+          if (taskId) setTasksUpdated(true);
         })}
       >
         <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
@@ -107,6 +117,15 @@ export default function CreateTask({ addTaskAction }: createTaskProps) {
           </button>
         </div>
       </form>
+      {tasksUpdated && (
+        <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
+          New Task has been added{" "}
+          <Link href="/tasklist" className="text-cyan-300">
+            Click here
+          </Link>
+          to the Task list
+        </div>
+      )}
     </div>
   );
 }

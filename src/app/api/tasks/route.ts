@@ -50,11 +50,17 @@ export async function GET() {
 
 // post request
 export async function POST(request: Request) {
-  const task = await request.json();
+  const {
+    task: { title, description, createdOn, type, status },
+  } = await request.json();
 
   const taskWithId = {
     id: tasks.length + 1,
-    ...task,
+    title,
+    description,
+    createdOn,
+    type,
+    status,
   };
 
   tasks.push(taskWithId);
