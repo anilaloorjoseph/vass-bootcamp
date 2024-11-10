@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { type Task, type Context } from "../types/transcript";
+import { type Task, type Context } from "../types/typescript";
 
 let initialTasks: Task[] = [
   {
-    id: 1,
+    id: "1",
     title: "asd",
     description: "asdas",
     type: "asd",
@@ -13,7 +13,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: 2,
+    id: "2",
     title: "asd",
     description: "asdas",
     type: "asd",
@@ -21,7 +21,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: 3,
+    id: "3",
     title: "cxzxcxczxczxcz",
     description: "asdas",
     type: "asd",
@@ -29,7 +29,7 @@ let initialTasks: Task[] = [
     status: "todo",
   },
   {
-    id: 4,
+    id: "4",
     title: "title",
     description: "description",
     type: "testing",
@@ -37,7 +37,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: 5,
+    id: "5",
     title: "new task",
     description: "new task",
     type: "new task",
@@ -48,10 +48,10 @@ let initialTasks: Task[] = [
 
 const TaskContext = createContext<Context>({
   tasks: initialTasks,
-  addTask: () => 0,
-  deleteTask: () => 0,
+  addTask: () => "",
+  deleteTask: () => "",
   getTask: () => ({
-    id: 0,
+    id: "",
     title: "",
     description: "",
     type: "",
@@ -64,20 +64,20 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
   const addTask = (task: Task) => {
-    const newTask = { ...task, id: tasks.length + 1 };
+    const newTask = { ...task, id: (tasks.length + 1).toString() };
     setTasks((prevTasks) => [...prevTasks, newTask]);
     return newTask.id;
   };
 
-  const deleteTask = (id: number) => {
+  const deleteTask = (id: string) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     return id;
   };
 
-  const getTask = (id: number) => {
+  const getTask = (id: string) => {
     return (
       tasks.find((task) => task.id === id) || {
-        id: 0,
+        id: "",
         title: "",
         description: "",
         type: "",

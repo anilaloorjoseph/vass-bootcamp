@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function CreateTask() {
-  const { tasks, addTask } = useTasks();
+  const { addTask } = useTasks();
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
 
   const {
@@ -34,7 +34,6 @@ export default function CreateTask() {
       <form
         onSubmit={handleSubmit((data) => {
           let taskId = addTask(data);
-          console.log(taskId);
           if (taskId) setTasksUpdated(true);
         })}
       >

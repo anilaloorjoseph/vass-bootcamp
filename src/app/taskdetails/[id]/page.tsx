@@ -1,6 +1,6 @@
 "use client";
 import { useState, use, useEffect } from "react";
-import { Task } from "../../types/transcript";
+import { Task } from "../../types/typescript";
 import { useTasks } from "../../context/useContext";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
@@ -9,7 +9,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { getTask } = useTasks();
 
   useEffect(() => {
-    const data = getTask(parseInt(id));
+    const data = getTask(id);
     setTask(data);
   }, []);
 
