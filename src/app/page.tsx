@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
-import { importDummyUsers } from "./actions/actions";
+import { getDummyUsers, importDummyUsers } from "./actions/actions";
 import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
     async function run() {
       await importDummyUsers();
+      await getDummyUsers();
     }
     run();
   }, []);

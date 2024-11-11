@@ -86,3 +86,12 @@ export async function importDummyUsers() {
 
   console.log("Data imported!");
 }
+
+export async function getDummyUsers() {
+  try {
+    const users = await UserModel.find({});
+    console.log(users);
+  } catch (err) {
+    console.log(err);
+  }
+}
