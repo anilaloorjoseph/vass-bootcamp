@@ -3,6 +3,8 @@ import connectDB from "../config/database";
 import TaskModel from "../models/taskModel";
 import { ITask } from "../types/typescript";
 
+ await connectDB();
+
 export async function createTask(task: ITask) {
   try {
     const data = await TaskModel.create(task);
@@ -40,7 +42,7 @@ export async function getTask(id: string) {
 
 export async function getAllTasks() {
   try {
-    await connectDB();
+   
     const data = await TaskModel.find({});
     const tasks = JSON.parse(JSON.stringify(data));
     return tasks;
