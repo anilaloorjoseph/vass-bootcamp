@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { IUser } from "../types/typescript";
+import { IUserData } from "../types/typescript";
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new mongoose.Schema<IUserData>({
   username: {
     type: String,
     required: true,
@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema<IUser>({
   },
 });
 
-const UserModel =
-  mongoose.models.UserModel || mongoose.model("UserModel", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-export default UserModel;
+export default User;

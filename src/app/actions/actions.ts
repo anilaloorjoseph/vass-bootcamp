@@ -1,15 +1,15 @@
 "use server";
 import users from "../../../data/users";
 import connectDB from "../config/database";
-import TaskModel from "../models/taskModel";
-import UserModel from "../models/userModel";
-import { ITask, IUser } from "../types/typescript";
+import Taskmodel from "../models/taskModel";
+import Usermodel from "../models/userModel";
+import { type TaskData } from "../types/typescript";
 
 await connectDB();
 
-export async function createTask(task: ITask) {
+export async function createTask(task: TaskData) {
   try {
-    const data = await TaskModel.create(task);
+    const data = await Taskmodel.create(task);
     const value = JSON.parse(JSON.stringify(data));
     return value._id;
   } catch (err) {
@@ -18,19 +18,12 @@ export async function createTask(task: ITask) {
   }
 }
 
-export async function deleteTask(id: string) {
-  try {
-    const data = await TaskModel.deleteOne({ _id: id });
-    return data.acknowledged;
-  } catch (err) {
-    console.error("Error", err);
-    throw new Error("Failed to delete the task");
-  }
-}
-
 export async function getTask(id: string) {
   try {
-    const data = await TaskModel.findById(id);
+    const data = await Taskmodel.findById(id).populate({
+      path: "assignedTo",
+      select: "-password",
+    });
     if (!data) {
       throw new Error("Task not found");
     }
@@ -42,9 +35,19 @@ export async function getTask(id: string) {
   }
 }
 
+export async function deleteTask(id: string) {
+  try {
+    const data = await Taskmodel.deleteOne({ _id: id });
+    return data.acknowledged;
+  } catch (err) {
+    console.error("Error", err);
+    throw new Error("Failed to delete the task");
+  }
+}
+
 export async function getAllTasks() {
   try {
-    const data = await TaskModel.find({});
+    const data = await Taskmodel.find({});
     const tasks = JSON.parse(JSON.stringify(data));
     return tasks;
   } catch (err) {
@@ -53,20 +56,27 @@ export async function getAllTasks() {
   }
 }
 
-export async function updateTask(task: ITask) {
+export async function updateTask(task: TaskData) {
   try {
-    const { _id, title, description, status, createdOn, type } = task;
-    const data = await TaskModel.findById(_id);
+    const { _id, title, description, status, createdOn, type, assignedTo } =
+      task;
+    const data = await Taskmodel.findById(_id);
     if (data) {
       data.title = title || data.title;
       data.description = description || data.description;
       data.status = status || data.status;
       data.createdOn = createdOn || data.createdOn;
       data.type = type || data.type;
+      data.assignedTo = assignedTo || null;
 
       await data.save();
-      const value = JSON.parse(JSON.stringify(data));
-      return value._id;
+      const populatedData = await data.populate({
+        path: "assignedTo",
+        select: "-password",
+      });
+
+      const response = JSON.parse(JSON.stringify(populatedData));
+      return response;
     } else {
       console.error("Task doesnt exist");
     }
@@ -78,8 +88,8 @@ export async function updateTask(task: ITask) {
 
 export async function importDummyUsers() {
   try {
-    await UserModel.deleteMany();
-    await UserModel.insertMany(users);
+    await Usermodel.deleteMany();
+    await Usermodel.insertMany(users);
   } catch (err) {
     console.log(err);
   }
@@ -89,8 +99,9 @@ export async function importDummyUsers() {
 
 export async function getDummyUsers() {
   try {
-    const users = await UserModel.find({});
-    console.log(users);
+    const data = await Usermodel.find({});
+    const users = JSON.parse(JSON.stringify(data));
+    return users;
   } catch (err) {
     console.log(err);
   }

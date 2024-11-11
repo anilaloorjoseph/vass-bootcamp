@@ -3,16 +3,17 @@ import Link from "next/link";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { getAllTasks, deleteTask } from "../actions/actions";
 import { useEffect, useState } from "react";
-import { ITask } from "../types/typescript";
+import { ITaskData } from "../types/typescript";
 
 export default function DisplayTasks() {
-  const [serverTasks, setServerTasks] = useState<ITask[]>([]);
+  const [serverTasks, setServerTasks] = useState<ITaskData[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchTasks() {
       try {
         const data = await getAllTasks();
+
         setServerTasks(data);
       } catch (error) {
         console.error("Error fetching tasks:", error);

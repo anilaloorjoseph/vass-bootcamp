@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ITask } from "../types/typescript";
+import { ITaskData } from "../types/typescript";
 
-const taskSchema = new mongoose.Schema<ITask>({
+const taskSchema = new mongoose.Schema<ITaskData>({
   title: {
     type: String,
     required: true,
@@ -22,9 +22,13 @@ const taskSchema = new mongoose.Schema<ITask>({
     type: String,
     required: true,
   },
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: "User",
+  },
 });
 
-const TaskModel =
-  mongoose.models.TaskModel || mongoose.model("TaskModel", taskSchema);
+const Task = mongoose.models.Task || mongoose.model("Task", taskSchema);
 
-export default TaskModel;
+export default Task;

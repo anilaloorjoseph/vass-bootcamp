@@ -2,10 +2,16 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createTask } from "../actions/actions";
+import {
+  createTask,
+  getDummyUsers,
+  importDummyUsers,
+} from "../actions/actions";
+import { IUserData } from "../types/typescript";
 
 export default function CreateTask() {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
+  const [users, setUsers] = useState<IUserData[]>([]);
 
   const {
     register,
@@ -18,6 +24,7 @@ export default function CreateTask() {
       type: "",
       createdOn: "",
       status: "",
+      assignedTo: "",
     },
   });
 
@@ -26,6 +33,15 @@ export default function CreateTask() {
       setTasksUpdated(false);
     }, 4000);
   }, [tasksUpdated]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await importDummyUsers();
+      let data = await getDummyUsers();
+      setUsers(data);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="container w-2/4 m-auto">
@@ -39,7 +55,6 @@ export default function CreateTask() {
           <h2 className="text-xl font-medium text-center">Create Task</h2>
           <input
             type="text"
-            name="title"
             {...register("title", {
               required: "This is required",
               maxLength: {
@@ -54,7 +69,6 @@ export default function CreateTask() {
             {errors.title?.message}
           </small>
           <textarea
-            name="description"
             {...register("description", {
               required: "This is required",
               maxLength: 200,
@@ -67,7 +81,6 @@ export default function CreateTask() {
           </small>
           <input
             type="text"
-            name="type"
             {...register("type", {
               required: "This is required",
               maxLength: 20,
@@ -80,7 +93,6 @@ export default function CreateTask() {
           </small>
           <input
             type="date"
-            name="createdOn"
             {...register("createdOn", {
               required: "This is required",
               maxLength: 30,
@@ -92,7 +104,6 @@ export default function CreateTask() {
             {errors.createdOn?.message}
           </small>
           <select
-            name="status"
             {...register("status", {
               required: "This is required",
             })}
@@ -106,6 +117,23 @@ export default function CreateTask() {
           <small className="block text-center text-red-950">
             {errors.status?.message}
           </small>
+          <select
+            {...register("assignedTo", {
+              required: "This is required",
+            })}
+            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+          >
+            <option value="">--select user--</option>
+            {users &&
+              users.map(({ username, _id }, index) => (
+                <option key={index} value={_id}>
+                  {username}
+                </option>
+              ))}
+          </select>
+          <small className="block text-center text-red-950">
+            {errors.assignedTo?.message}
+          </small>
           <button
             type="submit"
             className="bg-slate-500 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
@@ -116,7 +144,7 @@ export default function CreateTask() {
       </form>
       {tasksUpdated && (
         <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
-          New Task has been added{" "}
+          New Task has been added
           <Link href="/tasklist" className="text-cyan-300">
             Click here
           </Link>

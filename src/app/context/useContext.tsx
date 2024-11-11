@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { type Task, type Context } from "../types/typescript";
+import { type TaskData, type Context } from "../types/typescript";
 
-let initialTasks: Task[] = [
+let initialTasks: TaskData[] = [
   {
-    id: "1",
+    _id: "1",
     title: "asd",
     description: "asdas",
     type: "asd",
@@ -13,7 +13,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: "2",
+    _id: "2",
     title: "asd",
     description: "asdas",
     type: "asd",
@@ -21,7 +21,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: "3",
+    _id: "3",
     title: "cxzxcxczxczxcz",
     description: "asdas",
     type: "asd",
@@ -29,7 +29,7 @@ let initialTasks: Task[] = [
     status: "todo",
   },
   {
-    id: "4",
+    _id: "4",
     title: "title",
     description: "description",
     type: "testing",
@@ -37,7 +37,7 @@ let initialTasks: Task[] = [
     status: "completed",
   },
   {
-    id: "5",
+    _id: "5",
     title: "new task",
     description: "new task",
     type: "new task",
@@ -61,22 +61,22 @@ const TaskContext = createContext<Context>({
 });
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState<TaskData[]>(initialTasks);
 
-  const addTask = (task: Task) => {
+  const addTask = (task: TaskData) => {
     const newTask = { ...task, id: (tasks.length + 1).toString() };
     setTasks((prevTasks) => [...prevTasks, newTask]);
     return newTask.id;
   };
 
   const deleteTask = (id: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
     return id;
   };
 
   const getTask = (id: string) => {
     return (
-      tasks.find((task) => task.id === id) || {
+      tasks.find((task) => task._id === id) || {
         id: "",
         title: "",
         description: "",

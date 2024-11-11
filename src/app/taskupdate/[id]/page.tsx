@@ -1,14 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { updateTask, getTask } from "../../actions/actions";
+import { updateTask, getTask, getDummyUsers } from "../../actions/actions";
 import { use, useEffect, useState } from "react";
-import { ITask } from "../../types/typescript";
+import { type TaskData, IUserData } from "../../types/typescript";
 import { useRouter } from "next/navigation";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const [task, setTask] = useState<ITask>();
+  const [task, setTask] = useState<TaskData>();
   const router = useRouter();
+  const [users, setUsers] = useState<[]>();
 
   const {
     register,
@@ -22,6 +23,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
       type: task?.type,
       createdOn: task?.createdOn,
       status: task?.status,
+      assignedTo: task?.assignedTo,
     },
   });
 
@@ -37,6 +39,12 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     }
 
     fetchTask();
+
+    async function fetchData() {
+      let data = await getDummyUsers();
+      setUsers(data);
+    }
+    fetchData();
   }, [id, reset]);
 
   return (
@@ -113,6 +121,19 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <small className="block text-center text-red-950">
             {errors.status?.message}
           </small>
+          <select
+            {...register("assignedTo", {})}
+            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+            defaultValue={task?.assignedTo?._id ?? ""}
+          >
+            <option value="">UNASSIGNED</option>
+            {users &&
+              users.map(({ username, _id }, index) => (
+                <option key={index} value={_id}>
+                  {username}
+                </option>
+              ))}
+          </select>
           <button
             type="submit"
             className="bg-blue-400 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"

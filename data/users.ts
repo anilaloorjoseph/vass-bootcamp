@@ -1,6 +1,6 @@
-import { IUser } from "../src/app/types/typescript";
+import { IUserData } from "../src/app/types/typescript";
 
-const users: IUser[] = [
+const users: IUserData[] = [
   {
     username: "anil",
     password: "123anil",

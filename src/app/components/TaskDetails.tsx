@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ITask } from "../types/typescript";
-import { getTask, updateTask } from "../actions/actions";
+import { type TaskData, IUserData } from "../types/typescript";
+import { getDummyUsers, getTask, updateTask } from "../actions/actions";
 import { useForm } from "react-hook-form";
 
-export default function DetailsTask({ id }: { id: string }) {
-  const [task, setTask] = useState<ITask>();
+export default function TaskDetails({ id }: { id: string }) {
+  const [task, setTask] = useState<TaskData>();
   const [edit, setEdit] = useState<boolean>(false);
+  const [users, setUsers] = useState<IUserData[]>([]);
 
   const enableEditMode = (e: React.MouseEvent): void => {
     e.preventDefault();
@@ -26,21 +27,30 @@ export default function DetailsTask({ id }: { id: string }) {
       type: task?.type,
       createdOn: task?.createdOn,
       status: task?.status,
+      assignedTo: task?.assignedTo,
     },
   });
 
-  const onSubmit = async (data: ITask) => {
+  const onSubmit = async (data: TaskData) => {
     try {
       const res = await updateTask(data);
 
       if (res) {
         setEdit(false);
-        setTask(data);
+        setTask(res);
       }
     } catch (error) {
       console.error("Error updating task:", error);
     }
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      let data = await getDummyUsers();
+      setUsers(data);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     async function fetchTask() {
@@ -154,6 +164,28 @@ export default function DetailsTask({ id }: { id: string }) {
                 <small className="block text-center text-red-950">
                   {errors.status?.message}
                 </small>
+              )}
+            </div>
+            <div className="text-center flex justify-between py-2">
+              <p className="font-semibold w-1/2 items-center flex">
+                assignedTo:
+              </p>
+              {!edit ? (
+                <p>{task?.assignedTo?.username ?? "UNASSIGNED"}</p>
+              ) : (
+                <select
+                  {...register("assignedTo")}
+                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  defaultValue={task?.assignedTo?._id ?? ""}
+                >
+                  <option value="">UNASSIGNED</option>
+                  {users &&
+                    users.map(({ username, _id }, index) => (
+                      <option key={index} value={_id}>
+                        {username}
+                      </option>
+                    ))}
+                </select>
               )}
             </div>
             <hr />
