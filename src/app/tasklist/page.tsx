@@ -1,5 +1,5 @@
-import DisplayTask from "../components/DisplayTask";
+import DisplayTasks from "../components/DisplayTasks";
 
 export default function page() {
-  return <DisplayTask />;
+  return <DisplayTasks />;
 }

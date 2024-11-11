@@ -1,16 +1,23 @@
 "use client";
 import { useState, use, useEffect } from "react";
-import { Task } from "../../types/typescript";
-import { useTasks } from "../../context/useContext";
+import { ITask } from "../../types/typescript";
+import { getTask } from "../../actions/actions";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const [task, setTask] = useState<Task>();
-  const { getTask } = useTasks();
+  const [task, setTask] = useState<ITask>();
 
   useEffect(() => {
-    const data = getTask(id);
-    setTask(data);
+    async function fetchTask() {
+      try {
+        const data = await getTask(id);
+        setTask(data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    }
+
+    fetchTask();
   }, []);
 
   return (

@@ -4,7 +4,7 @@ import { ITask } from "../types/typescript";
 const taskSchema = new mongoose.Schema<ITask>({
   title: {
     type: String,
-    requried: true,
+    required: true,
   },
   description: {
     type: String,
@@ -25,6 +25,6 @@ const taskSchema = new mongoose.Schema<ITask>({
 });
 
 const TaskModel =
-  mongoose.models.TaskModel || mongoose.model<ITask>("TaskModel", taskSchema);
+  mongoose.models.TaskModel || mongoose.model("TaskModel", taskSchema);
 
 export default TaskModel;

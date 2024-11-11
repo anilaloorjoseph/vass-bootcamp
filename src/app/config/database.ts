@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const connectDB = async (): Promise<void> => {
   try {
@@ -6,7 +6,7 @@ const connectDB = async (): Promise<void> => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error:${error.message}`);
-    process.exit(1);
+    throw new Error("Failed to connect to database");
   }
 };
 
