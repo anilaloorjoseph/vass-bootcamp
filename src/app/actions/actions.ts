@@ -1,7 +1,11 @@
 "use server";
+import users from "../../../data/users";
 import connectDB from "../config/database";
 import TaskModel from "../models/taskModel";
-import { ITask } from "../types/typescript";
+import UserModel from "../models/userModel";
+import { ITask, IUser } from "../types/typescript";
+
+await connectDB();
 
 export async function createTask(task: ITask) {
   try {
@@ -40,7 +44,6 @@ export async function getTask(id: string) {
 
 export async function getAllTasks() {
   try {
-    await connectDB();
     const data = await TaskModel.find({});
     const tasks = JSON.parse(JSON.stringify(data));
     return tasks;
@@ -71,4 +74,15 @@ export async function updateTask(task: ITask) {
     console.error("Error creating task:", err);
     throw new Error("Failed to create task");
   }
+}
+
+export async function importDummyUsers() {
+  try {
+    await UserModel.deleteMany();
+    await UserModel.insertMany(users);
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.log("Data imported!");
 }

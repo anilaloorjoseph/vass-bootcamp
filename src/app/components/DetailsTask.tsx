@@ -32,7 +32,7 @@ export default function DetailsTask({ id }: { id: string }) {
   const onSubmit = async (data: ITask) => {
     try {
       const res = await updateTask(data);
-      console.log("updating task");
+
       if (res) {
         setEdit(false);
         setTask(data);

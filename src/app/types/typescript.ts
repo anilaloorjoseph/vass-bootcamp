@@ -23,3 +23,11 @@ export interface ITask {
   createdOn: string;
   status: string;
 }
+
+export interface IUser {
+  _id?: string;
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+}
