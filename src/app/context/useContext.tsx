@@ -13,6 +13,7 @@ import {
   getDummyUsersAction,
   getTaskAction,
   loginAction,
+  registerUserAction,
   updateTaskAction,
 } from "../actions/actions";
 import { useRouter } from "next/navigation";
@@ -61,6 +62,12 @@ const TaskContext = createContext<Context>({
       lastname: "",
     },
   ],
+  registerUser: async () => ({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+  }),
 });
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
@@ -74,8 +81,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
       const storedUserInfo = localStorage.getItem("userInfo");
       if (storedUserInfo) {
         setIsLoggedIn(JSON.parse(storedUserInfo));
-        setIsLoading(false);
       }
+      setIsLoading(false);
     }
   }, []);
 
@@ -94,7 +101,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   }: {
     username: string;
     password: string;
-  }): Promise<UserData> => {
+  }) => {
     if (username && password) {
       try {
         const res = await loginAction({ username, password });
@@ -166,6 +173,34 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const registerUser = async ({
+    username,
+    password,
+    firstname,
+    lastname,
+  }: {
+    username: string;
+    password: string;
+    firstname: string;
+    lastname: string;
+  }) => {
+    if (username && password) {
+      try {
+        const res = await registerUserAction({
+          username,
+          password,
+          firstname,
+          lastname,
+        });
+        setIsLoggedIn(res);
+        return res;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return { _id: "", username: "", firstname: "", lastname: "" };
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -180,6 +215,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
         getTask,
         updateTask,
         getDummyUsers,
+        registerUser,
       }}
     >
       {children}

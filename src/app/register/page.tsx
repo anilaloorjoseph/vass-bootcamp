@@ -1,8 +1,9 @@
 "use client";
-import Login from "../components/Login";
+import React from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTasks } from "../context/useContext";
+import Register from "../components/Register";
 
 export default function page() {
   const router = useRouter();
@@ -13,6 +14,5 @@ export default function page() {
       router.push("/tasklist");
     }
   }, [isLoggedIn]);
-
-  return <Login />;
+  return <Register />;
 }

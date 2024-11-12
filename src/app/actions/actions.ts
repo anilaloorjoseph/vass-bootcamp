@@ -3,7 +3,7 @@ import users from "../../../data/users";
 import connectDB from "../config/database";
 import Taskmodel from "../models/taskModel";
 import Usermodel from "../models/userModel";
-import { type TaskData } from "../types/typescript";
+import { type TaskData, type UserData } from "../types/typescript";
 
 await connectDB();
 
@@ -125,5 +125,26 @@ export async function getDummyUsersAction() {
     return users;
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function registerUserAction({
+  username,
+  password,
+  firstname,
+  lastname,
+}: UserData) {
+  try {
+    const data = await Usermodel.create({
+      username,
+      password,
+      firstname,
+      lastname,
+    });
+    if (!data) return null;
+    const user = JSON.parse(JSON.stringify(data));
+    return user;
+  } catch (error) {
+    console.log(error);
   }
 }

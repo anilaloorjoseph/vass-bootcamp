@@ -32,10 +32,18 @@ export default function Navigation() {
           Login
         </Link>
       )}
+      {!isAuthenticated && (
+        <Link
+          href="http://localhost:3000/register"
+          className="p-2  me-2 font-bold hover:text-sky-600"
+        >
+          Register
+        </Link>
+      )}
       {isAuthenticated && (
         <div className="ms-auto flex align-middle">
           <small className="p-2 text-base  me-2 font-bold text-green-600">
-            {isLoggedIn.firstname} {isLoggedIn.lastname}
+            {isLoggedIn?.firstname} {isLoggedIn?.lastname}
           </small>
           <small
             onClick={() => logout()}

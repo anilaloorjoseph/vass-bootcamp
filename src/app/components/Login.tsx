@@ -1,13 +1,11 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { useTasks } from "../context/useContext";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
-  const { login, isLoggedIn } = useTasks();
+  const { login } = useTasks();
   const [error, setError] = useState<string>();
-  const router = useRouter();
 
   const {
     register,
@@ -19,12 +17,6 @@ export default function Login() {
       password: "",
     },
   });
-
-  useEffect(() => {
-    if (isLoggedIn && isLoggedIn._id) {
-      router.push("/tasklist");
-    }
-  }, [isLoggedIn]);
 
   return (
     <div className="container mx-auto w-3/4 sm:w-2/5 xl:w-1/4  border my-4 p-4">

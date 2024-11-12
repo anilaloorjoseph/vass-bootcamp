@@ -29,6 +29,12 @@ export type Context = {
   getTask: (id: string) => Promise<TaskData>;
   updateTask: (task: TaskData) => Promise<TaskData>;
   getDummyUsers: () => Promise<UserData[]>;
+  registerUser: ({
+    username,
+    password,
+    firstname,
+    lastname,
+  }: UserData) => Promise<UserData>;
 };
 
 export type UserData = {

@@ -2,7 +2,6 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { importDummyUsers } from "../actions/actions";
 import { type UserData } from "../types/typescript";
 import { useTasks } from "../context/useContext";
 
@@ -35,7 +34,6 @@ export default function CreateTask() {
 
   useEffect(() => {
     async function fetchData() {
-      await importDummyUsers();
       let data = await getDummyUsers();
       setUsers(data);
     }
