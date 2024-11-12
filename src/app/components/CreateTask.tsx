@@ -2,16 +2,15 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  createTask,
-  getDummyUsers,
-  importDummyUsers,
-} from "../actions/actions";
-import { IUserData } from "../types/typescript";
+import { importDummyUsers } from "../actions/actions";
+import { type UserData } from "../types/typescript";
+import { useTasks } from "../context/useContext";
 
 export default function CreateTask() {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
-  const [users, setUsers] = useState<IUserData[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
+
+  const { createTask, getDummyUsers } = useTasks();
 
   const {
     register,

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ITaskData } from "../types/typescript";
+import { type TaskData } from "../types/typescript";
 
-const taskSchema = new mongoose.Schema<ITaskData>({
+const taskSchema = new mongoose.Schema<TaskData>({
   title: {
     type: String,
     required: true,

@@ -12,26 +12,29 @@ export type TaskData = {
 };
 
 export type Context = {
-  tasks: TaskData[];
-  addTask: (task: TaskData) => string;
-  deleteTask: (id: string) => string;
-  getTask: (id: string) => TaskData;
+  isLoggedIn: UserData;
+  isLoading: boolean;
+
+  login: ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }) => Promise<UserData>;
+  logout: () => void;
+  getAllTasks: () => Promise<TaskData[]>;
+  deleteTask: (id: string) => Promise<boolean>;
+  createTask: (task: TaskData) => Promise<string>;
+  getTask: (id: string) => Promise<TaskData>;
+  updateTask: (task: TaskData) => Promise<TaskData>;
+  getDummyUsers: () => Promise<UserData[]>;
 };
 
-export interface ITaskData {
-  _id?: string;
-  title: string;
-  description: string;
-  type: string;
-  createdOn: string;
-  status: string;
-  assignedTo?: ObjectId | null;
-}
-
-export interface IUserData {
+export type UserData = {
   _id?: string;
   username: string;
-  password: string;
+  password?: string;
   firstname: string;
   lastname: string;
-}
+};

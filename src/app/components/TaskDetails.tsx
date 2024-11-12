@@ -1,13 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { type TaskData, IUserData } from "../types/typescript";
-import { getDummyUsers, getTask, updateTask } from "../actions/actions";
+import { type TaskData, type UserData } from "../types/typescript";
 import { useForm } from "react-hook-form";
+import { useTasks } from "../context/useContext";
 
 export default function TaskDetails({ id }: { id: string }) {
   const [task, setTask] = useState<TaskData>();
   const [edit, setEdit] = useState<boolean>(false);
-  const [users, setUsers] = useState<IUserData[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const { getTask, updateTask, getDummyUsers } = useTasks();
 
   const enableEditMode = (e: React.MouseEvent): void => {
     e.preventDefault();

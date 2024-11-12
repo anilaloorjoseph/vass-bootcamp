@@ -7,7 +7,60 @@ import { type TaskData } from "../types/typescript";
 
 await connectDB();
 
-export async function createTask(task: TaskData) {
+export async function importDummyUsers() {
+  try {
+    await Usermodel.deleteMany();
+    await Usermodel.insertMany(users);
+  } catch (err) {
+    console.log(err);
+  }
+
+  console.log("Data imported!");
+}
+
+export async function loginAction({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) {
+  try {
+    const user = await Usermodel.findOne({ username, password }).select(
+      "username firstname lastname"
+    );
+    if (!user) return null;
+    const data = JSON.parse(JSON.stringify(user));
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getAllTasksAction() {
+  try {
+    const data = await Taskmodel.find({});
+    if (!data) return null;
+    const tasks = JSON.parse(JSON.stringify(data));
+    return tasks;
+  } catch (err) {
+    console.error("Error fetching tasks:", err);
+    throw new Error("Failed to fetch tasks.");
+  }
+}
+
+export async function deleteTaskAction(id: string) {
+  try {
+    const data = await Taskmodel.deleteOne({ _id: id });
+    if (!data) return null;
+    return data.acknowledged;
+  } catch (err) {
+    console.error("Error", err);
+    throw new Error("Failed to delete the task");
+  }
+}
+
+export async function createTaskAction(task: TaskData) {
   try {
     const data = await Taskmodel.create(task);
     const value = JSON.parse(JSON.stringify(data));
@@ -18,7 +71,7 @@ export async function createTask(task: TaskData) {
   }
 }
 
-export async function getTask(id: string) {
+export async function getTaskAction(id: string) {
   try {
     const data = await Taskmodel.findById(id).populate({
       path: "assignedTo",
@@ -35,28 +88,7 @@ export async function getTask(id: string) {
   }
 }
 
-export async function deleteTask(id: string) {
-  try {
-    const data = await Taskmodel.deleteOne({ _id: id });
-    return data.acknowledged;
-  } catch (err) {
-    console.error("Error", err);
-    throw new Error("Failed to delete the task");
-  }
-}
-
-export async function getAllTasks() {
-  try {
-    const data = await Taskmodel.find({});
-    const tasks = JSON.parse(JSON.stringify(data));
-    return tasks;
-  } catch (err) {
-    console.error("Error fetching tasks:", err);
-    throw new Error("Failed to fetch tasks.");
-  }
-}
-
-export async function updateTask(task: TaskData) {
+export async function updateTaskAction(task: TaskData) {
   try {
     const { _id, title, description, status, createdOn, type, assignedTo } =
       task;
@@ -86,18 +118,7 @@ export async function updateTask(task: TaskData) {
   }
 }
 
-export async function importDummyUsers() {
-  try {
-    await Usermodel.deleteMany();
-    await Usermodel.insertMany(users);
-  } catch (err) {
-    console.log(err);
-  }
-
-  console.log("Data imported!");
-}
-
-export async function getDummyUsers() {
+export async function getDummyUsersAction() {
   try {
     const data = await Usermodel.find({});
     const users = JSON.parse(JSON.stringify(data));

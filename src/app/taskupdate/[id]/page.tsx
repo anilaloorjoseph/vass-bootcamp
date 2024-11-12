@@ -1,15 +1,23 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { updateTask, getTask, getDummyUsers } from "../../actions/actions";
 import { use, useEffect, useState } from "react";
-import { type TaskData, IUserData } from "../../types/typescript";
+import { UserData, type TaskData } from "../../types/typescript";
 import { useRouter } from "next/navigation";
+import { useTasks } from "../../context/useContext";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [task, setTask] = useState<TaskData>();
   const router = useRouter();
-  const [users, setUsers] = useState<[]>();
+  const [users, setUsers] = useState<UserData[]>();
+  const { isLoggedIn, isLoading } = useTasks();
+  const { getTask, updateTask, getDummyUsers } = useTasks();
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn === null) {
+      router.push("/");
+    }
+  }, [isLoggedIn]);
 
   const {
     register,
@@ -37,15 +45,16 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
         console.error("Error fetching tasks:", err);
       }
     }
-
     fetchTask();
+  }, [id, reset]);
 
+  useEffect(() => {
     async function fetchData() {
       let data = await getDummyUsers();
       setUsers(data);
     }
     fetchData();
-  }, [id, reset]);
+  }, []);
 
   return (
     <div className="container w-2/4 m-auto">

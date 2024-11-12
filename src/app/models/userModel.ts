@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { IUserData } from "../types/typescript";
+import { type UserData } from "../types/typescript";
 
-const userSchema = new mongoose.Schema<IUserData>({
+const userSchema = new mongoose.Schema<UserData>({
   username: {
     type: String,
     required: true,

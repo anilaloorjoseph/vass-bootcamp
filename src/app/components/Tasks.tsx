@@ -1,19 +1,19 @@
 "use client";
 import Link from "next/link";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { getAllTasks, deleteTask } from "../actions/actions";
 import { useEffect, useState } from "react";
-import { ITaskData } from "../types/typescript";
+import { type TaskData } from "../types/typescript";
+import { useTasks } from "../context/useContext";
 
-export default function DisplayTasks() {
-  const [serverTasks, setServerTasks] = useState<ITaskData[]>([]);
+export default function Tasks() {
+  const [serverTasks, setServerTasks] = useState<TaskData[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const { getAllTasks, deleteTask } = useTasks();
 
   useEffect(() => {
     async function fetchTasks() {
       try {
         const data = await getAllTasks();
-
         setServerTasks(data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
