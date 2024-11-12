@@ -17,7 +17,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     if (!isLoading && isLoggedIn === null) {
       router.push("/");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isLoading]);
 
   const {
     register,

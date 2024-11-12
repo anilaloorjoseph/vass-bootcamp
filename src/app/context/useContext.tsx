@@ -64,7 +64,6 @@ const TaskContext = createContext<Context>({
 });
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
-  const [tasks, setTasks] = useState<TaskData[]>(initialTasks);
   const [isLoggedIn, setIsLoggedIn] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -74,8 +73,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
       const storedUserInfo = localStorage.getItem("userInfo");
       if (storedUserInfo) {
         setIsLoggedIn(JSON.parse(storedUserInfo));
-        setIsLoading(false);
       }
+      setIsLoading(false);
     }
   }, []);
 

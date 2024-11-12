@@ -12,7 +12,7 @@ export default function page() {
     if (!isLoading && isLoggedIn === null) {
       router.push("/");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isLoading]);
 
   return <Tasks />;
 }
