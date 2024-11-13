@@ -8,7 +8,21 @@ import { useTasks } from "../context/useContext";
 export default function Tasks() {
   const [serverTasks, setServerTasks] = useState<TaskData[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
-  const { getAllTasks, deleteTask } = useTasks();
+  const { getAllTasks, deleteTask, isLoggedIn } = useTasks();
+  const [authorisedUser, setAuthorisedUser] = useState<boolean>();
+  const [admin, setAdmin] = useState<boolean>();
+
+  useEffect(() => {
+    if (
+      isLoggedIn?.roles.includes("admin") ||
+      isLoggedIn?.roles.includes("manager")
+    ) {
+      setAuthorisedUser(true);
+    }
+    if (isLoggedIn?.roles.includes("admin")) {
+      setAdmin(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchTasks() {
@@ -45,9 +59,9 @@ export default function Tasks() {
               <div className="flex justify-between mb-2">
                 <Link
                   href={`/taskdetails/${value?._id}`}
-                  className="text-blue-600"
+                  className="text-blue-600 flex items-center"
                 >
-                  <h4 className="font-semibold">{value?.title}</h4>
+                  <h4 className="font-semibold me-2 ">{value?.title}</h4>
                 </Link>
                 <p>
                   <small>Type:</small>
@@ -71,20 +85,24 @@ export default function Tasks() {
                   <br />
                   {value?.createdOn}
                 </p>
-                <div className="flex  items-end">
-                  <p
-                    onClick={() => deleteTaskHandle(value?._id)}
-                    className="flex items-center text-red-500 font-semibold cursor-pointer pe-4"
-                  >
-                    Delete <MdDelete />
-                  </p>
-                  <Link
-                    href={`/taskupdate/${value?._id}`}
-                    className="flex items-center text-blue-500 font-semibold cursor-pointer"
-                  >
-                    Update <MdEdit />
-                  </Link>
-                </div>
+                {authorisedUser && (
+                  <div className="flex  items-end">
+                    {admin && (
+                      <p
+                        onClick={() => deleteTaskHandle(value?._id)}
+                        className="flex items-center text-red-500 font-semibold cursor-pointer pe-4"
+                      >
+                        Delete <MdDelete />
+                      </p>
+                    )}
+                    <Link
+                      href={`/taskdetails/${value?._id}`}
+                      className="flex items-center text-blue-500 font-semibold cursor-pointer"
+                    >
+                      Edit <MdEdit className="ms-2" />
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           ))}

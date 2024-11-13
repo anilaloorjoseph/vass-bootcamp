@@ -8,7 +8,7 @@ export default function Navigation() {
 
   return (
     <div className="container w-full mx-auto mt-2 p-4 flex justify-between drop-shadow bg-slate-100">
-      {isAuthenticated && (
+      {isAuthenticated && isAuthenticated?.roles.includes("admin") && (
         <Link
           href="http://localhost:3000/createtask"
           className="p-2 me-2 font-bold hover:text-sky-600"

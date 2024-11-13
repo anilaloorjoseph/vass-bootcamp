@@ -12,6 +12,9 @@ export default function page() {
     if (!isLoading && isLoggedIn === null) {
       router.push("/");
     }
+    if (isLoggedIn?.roles.includes("admin") === false) {
+      router.push("/tasklist");
+    }
   }, [isLoggedIn, isLoading]);
 
   return <CreateTask />;

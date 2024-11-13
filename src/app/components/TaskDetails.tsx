@@ -8,11 +8,13 @@ export default function TaskDetails({ id }: { id: string }) {
   const [task, setTask] = useState<TaskData>();
   const [edit, setEdit] = useState<boolean>(false);
   const [users, setUsers] = useState<UserData[]>([]);
-  const { getTask, updateTask, getUsers } = useTasks();
+  const { getTask, updateTask, getUsers, isLoggedIn } = useTasks();
+  const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
+  const [admin, setAdmin] = useState<boolean>(false);
 
-  const enableEditMode = (e: React.MouseEvent): void => {
+  const enableEditMode = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!id) return;
+    if (!id) return false;
     setEdit(true);
   };
 
@@ -35,7 +37,6 @@ export default function TaskDetails({ id }: { id: string }) {
   const onSubmit = async (data: TaskData) => {
     try {
       const res = await updateTask(data);
-
       if (res) {
         setEdit(false);
         setTask(res);
@@ -51,6 +52,16 @@ export default function TaskDetails({ id }: { id: string }) {
       setUsers(data);
     }
     fetchData();
+
+    if (
+      isLoggedIn?.roles.includes("manager") ||
+      isLoggedIn?.roles.includes("admin")
+    ) {
+      setAuthorisedUser(true);
+    }
+    if (isLoggedIn?.roles.includes("admin")) {
+      setAdmin(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -79,21 +90,23 @@ export default function TaskDetails({ id }: { id: string }) {
               {!edit ? (
                 <p> {task?.title}</p>
               ) : (
-                <input
-                  type="text"
-                  {...register("title", {
-                    maxLength: {
-                      value: 30,
-                      message: "Maximum length is 30 characters",
-                    },
-                  })}
-                  placeholder="Title"
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                />
+                admin && (
+                  <input
+                    type="text"
+                    {...register("title", {
+                      maxLength: {
+                        value: 30,
+                        message: "Maximum length is 30 characters",
+                      },
+                    })}
+                    placeholder="Title"
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  />
+                )
               )}
             </div>
 
-            {edit && (
+            {edit && admin && (
               <small className="block text-center text-red-950">
                 {errors.title?.message}
               </small>
@@ -106,16 +119,18 @@ export default function TaskDetails({ id }: { id: string }) {
               {!edit ? (
                 <p> {task?.description}</p>
               ) : (
-                <textarea
-                  {...register("description", {
-                    maxLength: 200,
-                  })}
-                  placeholder="Description"
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                ></textarea>
+                admin && (
+                  <textarea
+                    {...register("description", {
+                      maxLength: 200,
+                    })}
+                    placeholder="Description"
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  ></textarea>
+                )
               )}
             </div>
-            {edit && (
+            {edit && admin && (
               <small className="block text-center text-red-950">
                 {errors.description?.message}
               </small>
@@ -127,20 +142,22 @@ export default function TaskDetails({ id }: { id: string }) {
               {!edit ? (
                 <p>{task?.type}</p>
               ) : (
-                <textarea
-                  {...register("type", {
-                    maxLength: {
-                      value: 200,
-                      message: "Maximum length is 200 characters",
-                    },
-                  })}
-                  placeholder="Description"
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                ></textarea>
+                admin && (
+                  <textarea
+                    {...register("type", {
+                      maxLength: {
+                        value: 200,
+                        message: "Maximum length is 200 characters",
+                      },
+                    })}
+                    placeholder="Description"
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  ></textarea>
+                )
               )}
             </div>
 
-            {edit && (
+            {edit && admin && (
               <small className="block text-center text-red-950">
                 {errors.type?.message}
               </small>
@@ -151,17 +168,19 @@ export default function TaskDetails({ id }: { id: string }) {
               {!edit ? (
                 <p> {task?.status}</p>
               ) : (
-                <select
-                  {...register("status")}
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                >
-                  <option value="">--select status--</option>
-                  <option value="todo">To Do</option>
-                  <option value="inprogress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
+                admin && (
+                  <select
+                    {...register("status")}
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  >
+                    <option value="">--select status--</option>
+                    <option value="todo">To Do</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                )
               )}
-              {edit && (
+              {edit && admin && (
                 <small className="block text-center text-red-950">
                   {errors.status?.message}
                 </small>
@@ -174,19 +193,21 @@ export default function TaskDetails({ id }: { id: string }) {
               {!edit ? (
                 <p>{task?.assignedTo?.username ?? "UNASSIGNED"}</p>
               ) : (
-                <select
-                  {...register("assignedTo")}
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                  defaultValue={task?.assignedTo?._id ?? ""}
-                >
-                  <option value="">UNASSIGNED</option>
-                  {users &&
-                    users.map(({ username, _id }, index) => (
-                      <option key={index} value={_id}>
-                        {username}
-                      </option>
-                    ))}
-                </select>
+                authorisedUser && (
+                  <select
+                    {...register("assignedTo")}
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                    defaultValue={task?.assignedTo?._id ?? ""}
+                  >
+                    <option value="">UNASSIGNED</option>
+                    {users &&
+                      users.map(({ username, _id }, index) => (
+                        <option key={index} value={_id}>
+                          {username}
+                        </option>
+                      ))}
+                  </select>
+                )
               )}
             </div>
             <hr />
@@ -195,17 +216,19 @@ export default function TaskDetails({ id }: { id: string }) {
               <p className="font-semibold w-1/2 items-center flex">
                 Created On:
               </p>
-              {edit ? (
-                <input
-                  type="date"
-                  {...register("createdOn", {
-                    maxLength: 30,
-                  })}
-                  placeholder="Created On"
-                  className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                />
-              ) : (
+              {!edit ? (
                 <p>{task?.createdOn}</p>
+              ) : (
+                admin && (
+                  <input
+                    type="date"
+                    {...register("createdOn", {
+                      maxLength: 30,
+                    })}
+                    placeholder="Created On"
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                  />
+                )
               )}
             </div>
             {edit && (
@@ -213,28 +236,30 @@ export default function TaskDetails({ id }: { id: string }) {
                 {errors.createdOn?.message}
               </small>
             )}
-            <div className="buttons flex justify-end">
-              {edit && (
+            {authorisedUser && (
+              <div className="buttons flex justify-end">
+                {edit && (
+                  <button
+                    type="button"
+                    className="text-white p-2 w-1/6 bg-slate-500 me-2"
+                    onClick={() => setEdit(false)}
+                  >
+                    Cancel
+                  </button>
+                )}
                 <button
-                  type="button"
-                  className="text-white p-2 w-1/6 bg-slate-500 me-2"
-                  onClick={() => setEdit(false)}
+                  type={edit ? "submit" : "button"}
+                  className={`text-white p-2 w-1/6  ${
+                    edit
+                      ? "bg-blue-400 hover:bg-green-400"
+                      : "bg-green-400 hover:bg-blue-400"
+                  }`}
+                  onClick={!edit ? enableEditMode : undefined}
                 >
-                  Cancel
+                  {edit ? "Save" : "Edit"}
                 </button>
-              )}
-              <button
-                type={edit ? "submit" : "button"}
-                className={`text-white p-2 w-1/6  ${
-                  edit
-                    ? "bg-blue-400 hover:bg-green-400"
-                    : "bg-green-400 hover:bg-blue-400"
-                }`}
-                onClick={!edit ? enableEditMode : undefined}
-              >
-                {edit ? "Save" : "Edit"}
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         )}
       </form>
