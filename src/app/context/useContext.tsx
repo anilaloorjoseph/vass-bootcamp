@@ -10,11 +10,14 @@ import {
   createTaskAction,
   deleteTaskAction,
   getAllTasksAction,
-  getDummyUsersAction,
+  getUsersAction,
   getTaskAction,
   loginAction,
   registerUserAction,
   updateTaskAction,
+  getUserAction,
+  addUserRoleAction,
+  deleteUserRoleAction,
 } from "../actions/actions";
 import { useRouter } from "next/navigation";
 
@@ -24,7 +27,13 @@ const TaskContext = createContext<Context>({
   isLoggedIn: { _id: "", username: "", firstname: "", lastname: "" },
   isLoading: true,
 
-  login: async () => ({ _id: "", username: "", firstname: "", lastname: "" }),
+  login: async () => ({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+    roles: [],
+  }),
   logout: () => null,
   getAllTasks: async () => [
     {
@@ -54,7 +63,7 @@ const TaskContext = createContext<Context>({
     createdOn: "",
     status: "",
   }),
-  getDummyUsers: async () => [
+  getUsers: async () => [
     {
       _id: "",
       username: "",
@@ -68,10 +77,27 @@ const TaskContext = createContext<Context>({
     firstname: "",
     lastname: "",
   }),
+  getUser: async () => ({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+  }),
+  addUserRole: async () => ({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+  }),
+  deleteUserRole: async () => ({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+  }),
 });
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
-  const [tasks, setTasks] = useState<TaskData[]>(initialTasks);
   const [isLoggedIn, setIsLoggedIn] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
@@ -164,9 +190,9 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const getDummyUsers = async () => {
+  const getUsers = async () => {
     try {
-      const res = await getDummyUsersAction();
+      const res = await getUsersAction();
       return res;
     } catch (error) {
       console.log(error);
@@ -201,6 +227,36 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     return { _id: "", username: "", firstname: "", lastname: "" };
   };
 
+  const getUser = async (id: string) => {
+    try {
+      const res = await getUserAction(id);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addUserRole = async (id: string, role: string) => {
+    try {
+      const res = await addUserRoleAction(id, role);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteUserRole = async (id: string, role: string) => {
+    if (role === "user" || role === "admin") {
+      throw new Error(`${role} can't be deleted!`);
+    }
+    try {
+      const res = await deleteUserRoleAction(id, role);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -214,8 +270,11 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
         createTask,
         getTask,
         updateTask,
-        getDummyUsers,
+        getUsers,
         registerUser,
+        getUser,
+        addUserRole,
+        deleteUserRole,
       }}
     >
       {children}

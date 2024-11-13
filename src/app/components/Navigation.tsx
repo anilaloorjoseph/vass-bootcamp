@@ -4,7 +4,7 @@ import { useTasks } from "../context/useContext";
 
 export default function Navigation() {
   const { isLoggedIn, logout } = useTasks();
-  const isAuthenticated = isLoggedIn ? isLoggedIn._id : false;
+  const isAuthenticated = isLoggedIn && isLoggedIn._id ? isLoggedIn : false;
 
   return (
     <div className="container w-full mx-auto mt-2 p-4 flex justify-between drop-shadow bg-slate-100">
@@ -19,9 +19,17 @@ export default function Navigation() {
       {isAuthenticated && (
         <Link
           href="http://localhost:3000/tasklist"
-          className="p-2 ms-2 me-auto font-bold hover:text-sky-600"
+          className="p-2 ms-2 font-bold hover:text-sky-600"
         >
           Task List
+        </Link>
+      )}
+      {isAuthenticated && isAuthenticated?.roles.includes("admin") && (
+        <Link
+          href="http://localhost:3000/userlist"
+          className="p-2 ms-2 font-bold hover:text-sky-600"
+        >
+          Users List
         </Link>
       )}
       {!isAuthenticated && (

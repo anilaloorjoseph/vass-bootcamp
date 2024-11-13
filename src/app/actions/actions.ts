@@ -1,22 +1,10 @@
 "use server";
-import users from "../../../data/users";
 import connectDB from "../config/database";
 import Taskmodel from "../models/taskModel";
 import Usermodel from "../models/userModel";
 import { type TaskData, type UserData } from "../types/typescript";
 
 await connectDB();
-
-export async function importDummyUsers() {
-  try {
-    await Usermodel.deleteMany();
-    await Usermodel.insertMany(users);
-  } catch (err) {
-    console.log(err);
-  }
-
-  console.log("Data imported!");
-}
 
 export async function loginAction({
   username,
@@ -27,7 +15,7 @@ export async function loginAction({
 }) {
   try {
     const user = await Usermodel.findOne({ username, password }).select(
-      "username firstname lastname"
+      "username firstname lastname roles"
     );
     if (!user) return null;
     const data = JSON.parse(JSON.stringify(user));
@@ -118,7 +106,7 @@ export async function updateTaskAction(task: TaskData) {
   }
 }
 
-export async function getDummyUsersAction() {
+export async function getUsersAction() {
   try {
     const data = await Usermodel.find({});
     const users = JSON.parse(JSON.stringify(data));
@@ -144,6 +132,49 @@ export async function registerUserAction({
     if (!data) return null;
     const user = JSON.parse(JSON.stringify(data));
     return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUserAction(id: string) {
+  try {
+    const data = await Usermodel.findById(id).select("-password");
+    if (!data) return null;
+    const user = JSON.parse(JSON.stringify(data));
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addUserRoleAction(id: string, role: string) {
+  try {
+    const user = await Usermodel.findById(id).select("-password");
+    if (!user) return null;
+    if (user?.roles.includes(role)) {
+      throw new Error("Role exists!");
+    }
+    user?.roles.push(role);
+    const data = await user.save();
+    const updatedUser = JSON.parse(JSON.stringify(data));
+    return updatedUser;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteUserRoleAction(id: string, role: string) {
+  try {
+    const user = await Usermodel.findById(id).select("-password");
+    if (!user) return null;
+    const index = user?.roles.indexOf(role);
+    if (index !== -1) {
+      user.roles.splice(index, 1);
+    }
+    const data = await user.save();
+    const updatedUser = JSON.parse(JSON.stringify(data));
+    return updatedUser;
   } catch (error) {
     console.log(error);
   }

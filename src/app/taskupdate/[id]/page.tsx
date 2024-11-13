@@ -11,7 +11,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [users, setUsers] = useState<UserData[]>();
   const { isLoggedIn, isLoading } = useTasks();
-  const { getTask, updateTask, getDummyUsers } = useTasks();
+  const { getTask, updateTask, getUsers } = useTasks();
 
   useEffect(() => {
     if (!isLoading && isLoggedIn === null) {
@@ -50,7 +50,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
 
   useEffect(() => {
     async function fetchData() {
-      let data = await getDummyUsers();
+      let data = await getUsers();
       setUsers(data);
     }
     fetchData();

@@ -8,7 +8,7 @@ export default function TaskDetails({ id }: { id: string }) {
   const [task, setTask] = useState<TaskData>();
   const [edit, setEdit] = useState<boolean>(false);
   const [users, setUsers] = useState<UserData[]>([]);
-  const { getTask, updateTask, getDummyUsers } = useTasks();
+  const { getTask, updateTask, getUsers } = useTasks();
 
   const enableEditMode = (e: React.MouseEvent): void => {
     e.preventDefault();
@@ -47,7 +47,7 @@ export default function TaskDetails({ id }: { id: string }) {
 
   useEffect(() => {
     async function fetchData() {
-      let data = await getDummyUsers();
+      let data = await getUsers();
       setUsers(data);
     }
     fetchData();

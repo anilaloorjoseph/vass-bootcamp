@@ -9,7 +9,7 @@ export default function CreateTask() {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
   const [users, setUsers] = useState<UserData[]>([]);
 
-  const { createTask, getDummyUsers } = useTasks();
+  const { createTask, getUsers } = useTasks();
 
   const {
     register,
@@ -34,7 +34,7 @@ export default function CreateTask() {
 
   useEffect(() => {
     async function fetchData() {
-      let data = await getDummyUsers();
+      let data = await getUsers();
       setUsers(data);
     }
     fetchData();

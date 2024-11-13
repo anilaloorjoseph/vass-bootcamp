@@ -28,13 +28,16 @@ export type Context = {
   createTask: (task: TaskData) => Promise<string>;
   getTask: (id: string) => Promise<TaskData>;
   updateTask: (task: TaskData) => Promise<TaskData>;
-  getDummyUsers: () => Promise<UserData[]>;
+  getUsers: () => Promise<UserData[]>;
   registerUser: ({
     username,
     password,
     firstname,
     lastname,
   }: UserData) => Promise<UserData>;
+  getUser: (id: string) => Promise<UserData>;
+  addUserRole: (id: string, role: string) => Promise<UserData>;
+  deleteUserRole: (id: string, role: string) => Promise<UserData>;
 };
 
 export type UserData = {
@@ -43,4 +46,5 @@ export type UserData = {
   password?: string;
   firstname: string;
   lastname: string;
+  roles?: string[];
 };
