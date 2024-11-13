@@ -34,6 +34,7 @@ export type Context = {
     password,
     firstname,
     lastname,
+    roles,
   }: UserData) => Promise<UserData>;
   getUser: (id: string) => Promise<UserData>;
   addUserRole: (id: string, role: string) => Promise<UserData>;

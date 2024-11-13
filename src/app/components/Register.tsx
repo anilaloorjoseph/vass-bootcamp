@@ -31,11 +31,13 @@ export default function Register() {
             setError("passwords are not matching");
             return false;
           }
+          const roles = ["user"];
           let res = await registerUser({
             username,
             password,
             firstname,
             lastname,
+            roles,
           });
           if (res === null) setError("passwords are matching");
         })}

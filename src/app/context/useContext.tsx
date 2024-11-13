@@ -204,11 +204,13 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     password,
     firstname,
     lastname,
+    roles,
   }: {
     username: string;
     password: string;
     firstname: string;
     lastname: string;
+    roles: string[];
   }) => {
     if (username && password) {
       try {
@@ -217,6 +219,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
           password,
           firstname,
           lastname,
+          roles,
         });
         setIsLoggedIn(res);
         return res;

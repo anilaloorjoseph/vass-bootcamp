@@ -121,6 +121,7 @@ export async function registerUserAction({
   password,
   firstname,
   lastname,
+  roles,
 }: UserData) {
   try {
     const data = await Usermodel.create({
@@ -128,6 +129,7 @@ export async function registerUserAction({
       password,
       firstname,
       lastname,
+      roles,
     });
     if (!data) return null;
     const user = JSON.parse(JSON.stringify(data));
