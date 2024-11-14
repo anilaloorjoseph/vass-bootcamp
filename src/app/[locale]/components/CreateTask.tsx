@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 export default function CreateTask({ locale }: { locale: string }) {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
   const [users, setUsers] = useState<UserData[]>([]);
-  const t = useTranslations("CreateTask");
+  const t = useTranslations("translations");
 
   const { createTask, getUsers } = useTasks();
 

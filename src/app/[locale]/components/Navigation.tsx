@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 export default function Navigation({ locale }: { locale: string }) {
   const { isLoggedIn, logout } = useTasks();
   const isAuthenticated = isLoggedIn && isLoggedIn._id ? isLoggedIn : false;
-  const t = useTranslations("Navigation");
+  const t = useTranslations("translations");
   const pathname = usePathname();
   const router = useRouter();
 

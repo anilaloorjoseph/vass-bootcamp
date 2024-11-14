@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 export default function Register() {
   const { registerUser } = useTasks();
   const [error, setError] = useState<string>();
-  const t = useTranslations("Register");
+  const t = useTranslations("translations");
 
   const {
     register,

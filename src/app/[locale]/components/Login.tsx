@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 export default function Login() {
   const { login } = useTasks();
   const [error, setError] = useState<string>();
-  const t = useTranslations("Login");
+  const t = useTranslations("translations");
 
   const {
     register,

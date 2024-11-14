@@ -1,8 +1,14 @@
 "use server";
 import connectDB from "../../config/database";
-import Taskmodel from "../models/taskModel";
-import Usermodel from "../models/userModel";
-import { type TaskData, type UserData } from "../types/typescript";
+import languages from "../../../../data/languages";
+import Language from "../models/languageModel";
+import Task from "../models/taskModel";
+import User from "../models/userModel";
+import {
+  LanguageData,
+  type TaskData,
+  type UserData,
+} from "../types/typescript";
 
 await connectDB();
 
@@ -14,7 +20,7 @@ export async function loginAction({
   password: string;
 }) {
   try {
-    const user = await Usermodel.findOne({ username, password }).select(
+    const user = await User.findOne({ username, password }).select(
       "username firstname lastname roles"
     );
     if (!user) return null;
@@ -27,7 +33,7 @@ export async function loginAction({
 
 export async function getAllTasksAction() {
   try {
-    const data = await Taskmodel.find({});
+    const data = await Task.find({});
     if (!data) return null;
     const tasks = JSON.parse(JSON.stringify(data));
     return tasks;
@@ -39,7 +45,7 @@ export async function getAllTasksAction() {
 
 export async function deleteTaskAction(id: string) {
   try {
-    const data = await Taskmodel.deleteOne({ _id: id });
+    const data = await Task.deleteOne({ _id: id });
     if (!data) return null;
     return data.acknowledged;
   } catch (err) {
@@ -50,7 +56,7 @@ export async function deleteTaskAction(id: string) {
 
 export async function createTaskAction(task: TaskData) {
   try {
-    const data = await Taskmodel.create(task);
+    const data = await Task.create(task);
     const value = JSON.parse(JSON.stringify(data));
     return value._id;
   } catch (err) {
@@ -61,7 +67,7 @@ export async function createTaskAction(task: TaskData) {
 
 export async function getTaskAction(id: string) {
   try {
-    const data = await Taskmodel.findById(id).populate({
+    const data = await Task.findById(id).populate({
       path: "assignedTo",
       select: "-password",
     });
@@ -80,7 +86,7 @@ export async function updateTaskAction(task: TaskData) {
   try {
     const { _id, title, description, status, createdOn, type, assignedTo } =
       task;
-    const data = await Taskmodel.findById(_id);
+    const data = await Task.findById(_id);
     if (data) {
       data.title = title || data.title;
       data.description = description || data.description;
@@ -108,7 +114,7 @@ export async function updateTaskAction(task: TaskData) {
 
 export async function getUsersAction() {
   try {
-    const data = await Usermodel.find({});
+    const data = await User.find({});
     const users = JSON.parse(JSON.stringify(data));
     return users;
   } catch (err) {
@@ -124,7 +130,7 @@ export async function registerUserAction({
   roles,
 }: UserData) {
   try {
-    const data = await Usermodel.create({
+    const data = await User.create({
       username,
       password,
       firstname,
@@ -141,7 +147,7 @@ export async function registerUserAction({
 
 export async function getUserAction(id: string) {
   try {
-    const data = await Usermodel.findById(id).select("-password");
+    const data = await User.findById(id).select("-password");
     if (!data) return null;
     const user = JSON.parse(JSON.stringify(data));
     return user;
@@ -152,7 +158,7 @@ export async function getUserAction(id: string) {
 
 export async function addUserRoleAction(id: string, role: string) {
   try {
-    const user = await Usermodel.findById(id).select("-password");
+    const user = await User.findById(id).select("-password");
     if (!user) return null;
     if (user?.roles.includes(role)) {
       throw new Error("Role exists!");
@@ -168,7 +174,7 @@ export async function addUserRoleAction(id: string, role: string) {
 
 export async function deleteUserRoleAction(id: string, role: string) {
   try {
-    const user = await Usermodel.findById(id).select("-password");
+    const user = await User.findById(id).select("-password");
     if (!user) return null;
     const index = user?.roles.indexOf(role);
     if (index !== -1) {
@@ -177,6 +183,26 @@ export async function deleteUserRoleAction(id: string, role: string) {
     const data = await user.save();
     const updatedUser = JSON.parse(JSON.stringify(data));
     return updatedUser;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addLanguageAction() {
+  try {
+    const data = await Language.insertMany(languages);
+    console.log("Data Imported.");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getTranslationAction(language: string) {
+  try {
+    const data = await Language.findOne({ language });
+    if (!data) return null;
+    const res = JSON.parse(JSON.stringify(data));
+    return res;
   } catch (error) {
     console.log(error);
   }

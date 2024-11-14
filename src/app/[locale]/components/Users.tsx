@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 export default function Users({ locale }: { locale: string }) {
   const [users, setUsers] = useState<UserData[]>([]);
   const { getUsers } = useTasks();
-  const t = useTranslations("Users");
+  const t = useTranslations("translations");
 
   useEffect(() => {
     async function fetchUsers() {

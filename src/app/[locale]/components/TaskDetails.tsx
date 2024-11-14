@@ -12,7 +12,7 @@ export default function TaskDetails({ id }: { id: string }) {
   const { getTask, updateTask, getUsers, isLoggedIn } = useTasks();
   const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(false);
-  const t = useTranslations("Task Details");
+  const t = useTranslations("translations");
 
   const enableEditMode = (e: React.MouseEvent) => {
     e.preventDefault();

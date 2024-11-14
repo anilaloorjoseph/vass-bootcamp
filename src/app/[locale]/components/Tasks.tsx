@@ -12,7 +12,7 @@ export default function Tasks({ locale }: { locale: string }) {
   const { getAllTasks, deleteTask, isLoggedIn } = useTasks();
   const [authorisedUser, setAuthorisedUser] = useState<boolean>();
   const [admin, setAdmin] = useState<boolean>();
-  const t = useTranslations("Tasks");
+  const t = useTranslations("translations");
 
   useEffect(() => {
     if (

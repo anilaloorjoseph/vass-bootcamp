@@ -47,3 +47,9 @@ export type UserData = {
   lastname: string;
   roles?: string[];
 };
+
+export type LanguageData = {
+  _id?: string;
+  language: string;
+  translations: object;
+};

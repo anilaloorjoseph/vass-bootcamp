@@ -18,7 +18,7 @@ export default function page({
     useTasks();
   const router = useRouter();
   const [warning, setWarning] = useState<string>();
-  const t = useTranslations("User Details");
+  const t = useTranslations("translations");
 
   const {
     register,
