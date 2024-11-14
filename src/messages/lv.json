@@ -1,0 +1,68 @@
+{
+  "Navigation": {
+    "Register": "Reģistrēties",
+    "Login": "Pieteikties",
+    "Create Task": "Izveidot Uzdevumu",
+    "Users List": "Lietotāju Saraksts",
+    "Task List": "Uzdevumu Saraksts",
+    "Logout": "Izrakstīties",
+    "Lang": "Valoda"
+  },
+  "CreateTask": {
+    "Create Task": "Izveidot Uzdevumu",
+    "To Do": "Darāms",
+    "In Progress": "Procesā",
+    "Completed": "Pabeigts",
+    "New Task has been added": "Jauns uzdevums ir pievienots",
+    "Click here": "Klikšķiniet šeit",
+    "to the Task list": "uz uzdevumu sarakstu"
+  },
+  "Login": {
+    "Login": "Pieteikties"
+  },
+  "Register": {
+    "Register": "Reģistrēties"
+  },
+  "Task Details": {
+    "Task Details": "Uzdevuma Detaļas",
+    "Title": "Nosaukums",
+    "Description": "Apraksts",
+    "Type": "Tips",
+    "Status": "Statuss",
+    "--select status--": "--izvēlieties statusu--",
+    "To Do": "Darāms",
+    "In Progress": "Procesā",
+    "Completed": "Pabeigts",
+    "assignedTo": "Piešķirts",
+    "Created On": "Izveidots",
+    "Cancel": "Atcelt",
+    "Save": "Saglabāt",
+    "Edit": "Rediģēt"
+  },
+  "Tasks": {
+    "Tasks": "Uzdevumi",
+    "Status": "Statuss",
+    "Type": "Tips",
+    "Description": "Apraksts",
+    "Created On": "Izveidots",
+    "Delete": "Dzēst",
+    "Edit": "Rediģēt",
+    "No tasks": "Nav uzdevumu"
+  },
+  "Users": {
+    "username": "lietotājvārds",
+    "roles": "lomas",
+    "No users": "Nav lietotāju"
+  },
+  "User Details": {
+    "User Details": "Lietotāja Detaļas",
+    "User name": "Lietotājvārds",
+    "First name": "Vārds",
+    "Last name": "Uzvārds",
+    "Roles": "Lomas",
+    "Add role to the user": "Pievienot lomu lietotājam",
+    "Manager": "Vadītājs",
+    "User-Default": "Lietotājs-Noklusējums",
+    "Add Role": "Pievienot Lomu"
+  }
+}

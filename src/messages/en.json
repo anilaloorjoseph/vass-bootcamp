@@ -1,0 +1,68 @@
+{
+  "Navigation": {
+    "Register": "Register",
+    "Login": "Login",
+    "Create Task": "Create Task",
+    "Users List": "Users List",
+    "Task List": "Task List",
+    "Logout": "Logout",
+    "Lang": "Lang"
+  },
+  "CreateTask": {
+    "Create Task": "Create Task",
+    "To Do": "To Do",
+    "In Progress": "In Progress",
+    "Completed": "Completed",
+    "New Task has been added": "New Task has been added",
+    "Clik here": "Click here",
+    "to the Task list": "to the task list"
+  },
+  "Login": {
+    "Login": "Login"
+  },
+  "Register": {
+    "Register": "Register"
+  },
+  "Task Details": {
+    "Task Details": "Task Details",
+    "Title": "Title",
+    "Description": "Description",
+    "Type": "Type",
+    "Status": "Status",
+    "--select status--": "--select status--",
+    "To Do": "To Do",
+    "In Progress": "In Progress",
+    "Completed": "Completed",
+    "assignedTo": "assignedTo",
+    "Created On": "Created On",
+    "Cancel": "Cancel",
+    "Save": "Save",
+    "Edit": "Edit"
+  },
+  "Tasks": {
+    "Tasks": "Tasks",
+    "Status": "Status",
+    "Type": "Type",
+    "Description": "Description",
+    "Created On": "Created On",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "No tasks": "No Tasks"
+  },
+  "Users": {
+    "username": "username",
+    "roles": "roles",
+    "No users": "No users"
+  },
+  "User Details": {
+    "User Details": "User Details",
+    "User name": "User name",
+    "First name": "First name",
+    "Last name": "Last name",
+    "Roles": "Roles",
+    "Add role to the user": "Add role to the user",
+    "Manager": "Manager",
+    "User-Default": "User-Default",
+    "Add Role": "Add Role"
+  }
+}
