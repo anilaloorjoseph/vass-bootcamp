@@ -16,7 +16,7 @@ export default function Tasks({ locale }: { locale: string }) {
 
   useEffect(() => {
     if (
-      isLoggedIn?.roles.includes("admin") ||
+      isLoggedIn?.roles.includes("admin") ??
       isLoggedIn?.roles.includes("manager")
     ) {
       setAuthorisedUser(true);
@@ -60,7 +60,7 @@ export default function Tasks({ locale }: { locale: string }) {
             <div key={index} className=" bg-slate-50 drop-shadow-md p-4 my-2">
               <div className="flex justify-between mb-2">
                 <Link
-                  href={`/${locale}/taskdetails/${value?._id}`}
+                  href={`/${locale}/task-details/${value?._id}`}
                   className="text-blue-600 flex items-center"
                 >
                   <h4 className="font-semibold me-2 ">{value?.title}</h4>
@@ -83,7 +83,7 @@ export default function Tasks({ locale }: { locale: string }) {
                   {value?.description}
                 </p>
                 <p>
-                  <small>{t("Created On")}:</small>
+                  <small>{t("Created_On")}:</small>
                   <br />
                   {value?.createdOn}
                 </p>
@@ -98,7 +98,7 @@ export default function Tasks({ locale }: { locale: string }) {
                       </p>
                     )}
                     <Link
-                      href={`/${locale}/taskdetails/${value?._id}`}
+                      href={`/${locale}/task-details/${value?._id}`}
                       className="flex items-center text-blue-500 font-semibold cursor-pointer"
                     >
                       {t("Edit")}: <MdEdit className="ms-2" />
@@ -110,7 +110,7 @@ export default function Tasks({ locale }: { locale: string }) {
           ))}
       {serverTasks.length <= 0 && (
         <small className="font-semibold text-slate-500 text-center w-full block p-4">
-          {t("No tasks")}
+          {t("No_tasks")}
         </small>
       )}
     </div>

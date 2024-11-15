@@ -25,7 +25,7 @@ export default function Users({ locale }: { locale: string }) {
         <p className="font-bold">{t("roles")}</p>
       </div>
       {users.map(({ _id, username, roles }, index) => (
-        <Link key={index} href={`/${locale}/userdetails/${_id}`}>
+        <Link key={index} href={`/${locale}/user-details/${_id}`}>
           <div className="container flex flex-row justify-between mx-auto my-2 hover:bg-slate-200 p-4 bg-slate-50 w-full">
             <p>{username}</p>
             <p>
@@ -41,6 +41,6 @@ export default function Users({ locale }: { locale: string }) {
       ))}
     </div>
   ) : (
-    <small>{t("No users")}</small>
+    <small>{t("No_users")}</small>
   );
 }

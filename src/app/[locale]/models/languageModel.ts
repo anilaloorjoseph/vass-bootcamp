@@ -13,6 +13,6 @@ const languageSchema = new mongoose.Schema<LanguageData>({
 });
 
 const Language =
-  mongoose.models.Language || mongoose.model("Language", languageSchema);
+  mongoose.models.Language ?? mongoose.model("Language", languageSchema);
 
 export default Language;

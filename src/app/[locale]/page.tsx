@@ -1,7 +1,5 @@
-import { addLanguageAction } from "./actions/actions";
+import React from "react";
 
 export default async function page() {
-  // await addLanguageAction();
-
-  return <div></div>;
+  return <div>page</div>;
 }

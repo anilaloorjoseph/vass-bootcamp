@@ -50,7 +50,7 @@ export default function page({
       router.push(`/${locale}`);
     }
     if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/tasklist`);
+      router.push(`/${locale}/task-list`);
     }
   }, [isLoggedIn, isLoading]);
 
@@ -66,24 +66,24 @@ export default function page({
     <>
       {user && (
         <div className="container w-full mx-auto mt-5 mb-2 py-2">
-          <h1 className="font-semibold">{t("User Details")}</h1>
+          <h1 className="font-semibold">{t("User_Details")}</h1>
           <hr className="mb-2" />
           <div className="grid grid-cols-2  gap-4">
             <div>
               <small className="text-red-500 font-semibold">
-                {t("User name")}{" "}
+                {t("User_name")}{" "}
               </small>
               <p> {user?.username}</p>
             </div>
             <div>
               <small className="text-red-500 font-semibold">
-                {t("First name")}{" "}
+                {t("First_name")}{" "}
               </small>
               <p> {user?.firstname}</p>
             </div>
             <div>
               <small className="text-red-500 font-semibold">
-                {t("Last name")}{" "}
+                {t("Last_name")}{" "}
               </small>
               <p>{user?.lastname}</p>
             </div>
@@ -111,7 +111,7 @@ export default function page({
       <div className="my-2">
         <form onSubmit={handleSubmit(handleAddRole)}>
           <div className="container w-full mx-auto mt-5">
-            <h2 className="font-semibold">{t("Add role to the user")}</h2>
+            <h2 className="font-semibold">{t("Add_role_to_the_user")}</h2>
             <hr className="mb-4 mt-2" />
             <div className="flex flex-col">
               <select
@@ -128,7 +128,7 @@ export default function page({
                 type="submit"
                 className="button border p-2 text-white bg-slate-500 hover:bg-green-600"
               >
-                {t("Add Role")}
+                {t("Add_Role")}
               </button>
               {warning && (
                 <small className="font-semibold text-center mt-4 text-red-500 p-2 border border-red-500">

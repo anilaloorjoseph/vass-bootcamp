@@ -15,7 +15,7 @@ export default function page({
 
   useEffect(() => {
     if (isLoggedIn && isLoggedIn._id) {
-      router.push(`/${locale}/tasklist`);
+      router.push(`/${locale}/task-list`);
     }
   }, [isLoggedIn]);
 

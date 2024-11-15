@@ -254,7 +254,7 @@ export const TaskProvider = ({
   };
 
   const deleteUserRole = async (id: string, role: string) => {
-    if (role === "user" || role === "admin") {
+    if (role === "user" ?? role === "admin") {
       throw new Error(`${role} can't be deleted!`);
     }
     try {

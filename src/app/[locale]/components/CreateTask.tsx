@@ -52,7 +52,7 @@ export default function CreateTask({ locale }: { locale: string }) {
       >
         <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
           <h2 className="text-xl font-medium text-center">
-            {t("Create Task")}
+            {t("Create_Task")}
           </h2>
           <input
             type="text"
@@ -111,8 +111,8 @@ export default function CreateTask({ locale }: { locale: string }) {
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
           >
             <option value="">--select status--</option>
-            <option value="todo">{t("To Do")}</option>
-            <option value="inprogress">{t("In Progress")}</option>
+            <option value="todo">{t("To_Do")}</option>
+            <option value="inprogress">{t("In_Progress")}</option>
             <option value="completed">{t("Completed")}</option>
           </select>
           <small className="block text-center text-red-950">
@@ -139,17 +139,17 @@ export default function CreateTask({ locale }: { locale: string }) {
             type="submit"
             className="bg-slate-500 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
           >
-            {t("Create Task")}
+            {t("Create_Task")}
           </button>
         </div>
       </form>
       {tasksUpdated && (
         <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
-          {t("New Task has been added")}
-          <Link href={`/${locale}/tasklist`} className="text-cyan-300">
-            {t("Click here")}
+          {t("New_Task_has_been_added")}
+          <Link href={`/${locale}/task-list`} className="text-cyan-300">
+            {t("Click_here")}
           </Link>
-          {t("to the Task list")}
+          {t("to_the_Task_list")}
         </div>
       )}
     </div>

@@ -56,7 +56,7 @@ export default function TaskDetails({ id }: { id: string }) {
     fetchData();
 
     if (
-      isLoggedIn?.roles.includes("manager") ||
+      isLoggedIn?.roles.includes("manager") ??
       isLoggedIn?.roles.includes("admin")
     ) {
       setAuthorisedUser(true);
@@ -83,7 +83,7 @@ export default function TaskDetails({ id }: { id: string }) {
   return (
     <div className="container mx-auto w-2/4 border p-4 my-4 ">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h3 className="font-bold  py-2 text-center">{t("Task Details")}</h3>
+        <h3 className="font-bold  py-2 text-center">{t("Task_Details")}</h3>
         <hr className="py-2 " />
         {task && (
           <div className="grid grid-cols-1 gap-4">
@@ -181,9 +181,9 @@ export default function TaskDetails({ id }: { id: string }) {
                     {...register("status")}
                     className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
                   >
-                    <option value="">{t("--select status--")}</option>
-                    <option value="todo">{t("To Do")}</option>
-                    <option value="inprogress">{t("In Progress")}</option>
+                    <option value="">{t("--select_status--")}</option>
+                    <option value="todo">{t("To_Do")}</option>
+                    <option value="inprogress">{t("In_Progress")}</option>
                     <option value="completed">{t("Completed")}</option>
                   </select>
                 )
@@ -222,7 +222,7 @@ export default function TaskDetails({ id }: { id: string }) {
 
             <div className="text-center flex justify-between py-2">
               <p className="font-semibold w-1/2 items-center flex">
-                {t("Created On")}:
+                {t("Created_On")}:
               </p>
               {!edit ? (
                 <p>{task?.createdOn}</p>

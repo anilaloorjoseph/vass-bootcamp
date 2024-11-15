@@ -1,4 +1,4 @@
-import { type UserData } from "../src/app/types/typescript";
+import { type UserData } from "../src/app/[locale]/types/typescript";
 
 const users: UserData[] = [
   {

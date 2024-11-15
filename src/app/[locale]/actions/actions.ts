@@ -4,11 +4,7 @@ import languages from "../../../../data/languages";
 import Language from "../models/languageModel";
 import Task from "../models/taskModel";
 import User from "../models/userModel";
-import {
-  LanguageData,
-  type TaskData,
-  type UserData,
-} from "../types/typescript";
+import { type TaskData, type UserData } from "../types/typescript";
 
 await connectDB();
 
@@ -88,12 +84,12 @@ export async function updateTaskAction(task: TaskData) {
       task;
     const data = await Task.findById(_id);
     if (data) {
-      data.title = title || data.title;
-      data.description = description || data.description;
-      data.status = status || data.status;
-      data.createdOn = createdOn || data.createdOn;
-      data.type = type || data.type;
-      data.assignedTo = assignedTo || null;
+      data.title = title ?? data.title;
+      data.description = description ?? data.description;
+      data.status = status ?? data.status;
+      data.createdOn = createdOn ?? data.createdOn;
+      data.type = type ?? data.type;
+      data.assignedTo = assignedTo ?? null;
 
       await data.save();
       const populatedData = await data.populate({
