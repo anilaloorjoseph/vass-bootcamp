@@ -2,8 +2,9 @@
 import TaskDetails from "../../components/TaskDetails";
 import { use } from "react";
 import { useEffect } from "react";
-import { useTasks } from "../../context/useContext";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../../../../redux/slices/authSlice";
 
 export default function page({
   params,
@@ -11,14 +12,14 @@ export default function page({
   params: Promise<{ id: string; locale: string }>;
 }) {
   const { id, locale } = use(params);
-  const { isLoggedIn, isLoading } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn === null) {
+    if (isLoggedIn === null) {
       router.push(`/${locale}`);
     }
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn]);
 
   return <TaskDetails id={id} />;
 }

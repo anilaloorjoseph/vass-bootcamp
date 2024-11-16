@@ -2,14 +2,20 @@
 import Link from "next/link";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useEffect, useState } from "react";
-import { type TaskData } from "../types/typescript";
-import { useTasks } from "../context/useContext";
 import { useTranslations } from "next-intl";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import {
+  deleteTask,
+  getAllTasks,
+  selectTask,
+} from "../../../redux/slices/taskSlice";
 
 export default function Tasks({ locale }: { locale: string }) {
-  const [serverTasks, setServerTasks] = useState<TaskData[]>([]);
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const { getAllTasks, deleteTask, isLoggedIn } = useTasks();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useSelector(selectAuth);
+  const { tasks, deleteFlag } = useSelector(selectTask);
   const [authorisedUser, setAuthorisedUser] = useState<boolean>();
   const [admin, setAdmin] = useState<boolean>();
   const t = useTranslations("translations");
@@ -27,33 +33,17 @@ export default function Tasks({ locale }: { locale: string }) {
   }, []);
 
   useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const data = await getAllTasks();
-        setServerTasks(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
+    if (deleteFlag) {
+      dispatch(getAllTasks());
     }
-
-    fetchTasks();
-  }, [refresh]);
-
-  const deleteTaskHandle = async (id: string) => {
-    try {
-      const isDeleted = await deleteTask(id);
-      if (isDeleted) setRefresh((prev) => !prev);
-    } catch (err) {
-      console.error("Error delete Task", err);
-    }
-  };
+  }, [deleteFlag]);
 
   return (
     <div className="w-2/4 mx-auto p-4">
       <p className="font-bold text-center py-4">{t("Tasks")}</p>
 
-      {serverTasks &&
-        serverTasks
+      {tasks &&
+        tasks
           .slice()
           .reverse()
           .map((value, index) => (
@@ -91,7 +81,7 @@ export default function Tasks({ locale }: { locale: string }) {
                   <div className="flex  items-end">
                     {admin && (
                       <p
-                        onClick={() => deleteTaskHandle(value?._id)}
+                        onClick={() => dispatch(deleteTask(value?._id))}
                         className="flex items-center text-red-500 font-semibold cursor-pointer pe-4"
                       >
                         {t("Delete")}: <MdDelete />
@@ -108,7 +98,7 @@ export default function Tasks({ locale }: { locale: string }) {
               </div>
             </div>
           ))}
-      {serverTasks.length <= 0 && (
+      {tasks.length <= 0 && (
         <small className="font-semibold text-slate-500 text-center w-full block p-4">
           {t("No_tasks")}
         </small>

@@ -2,7 +2,8 @@
 import Login from "../components/Login";
 import { useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { useTasks } from "../context/useContext";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import { useSelector } from "react-redux";
 
 export default function page({
   params,
@@ -11,7 +12,7 @@ export default function page({
 }) {
   const { locale } = use(params);
   const router = useRouter();
-  const { isLoggedIn } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
 
   useEffect(() => {
     if (isLoggedIn && isLoggedIn._id) {

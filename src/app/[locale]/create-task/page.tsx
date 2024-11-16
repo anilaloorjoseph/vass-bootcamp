@@ -1,26 +1,27 @@
 "use client";
 import { use, useEffect } from "react";
-import { useTasks } from "../context/useContext";
 import { useRouter } from "next/navigation";
 import CreateTask from "../components/CreateTask";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import { useSelector } from "react-redux";
 
 export default function page({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { isLoggedIn, isLoading } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
   const router = useRouter();
   const { locale } = use(params);
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn === null) {
+    if (isLoggedIn === null) {
       router.push(`/${locale}`);
     }
     if (isLoggedIn?.roles.includes("admin") === false) {
       router.push(`/${locale}/task-list`);
     }
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn]);
 
   return <CreateTask locale={locale} />;
 }

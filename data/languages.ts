@@ -13,7 +13,7 @@ const languages = [
       In_Progress: "In Progress",
       Completed: "Completed",
       New_Task_has_been_added: "New Task has been added",
-      Clik_here: "Click here",
+      Click_here: "Click here",
       to_the_Task_list: "to the task list",
       Task_Details: "Task Details",
       Title: "Title",

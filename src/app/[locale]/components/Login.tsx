@@ -1,13 +1,21 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useTasks } from "../context/useContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import { login, selectAuth } from "../../../redux/slices/authSlice";
 
 export default function Login() {
-  const { login } = useTasks();
   const [error, setError] = useState<string>();
   const t = useTranslations("translations");
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { rejected } = useSelector(selectAuth);
+
+  useEffect(() => {
+    setError(rejected);
+  }, [rejected]);
 
   const {
     register,
@@ -25,8 +33,7 @@ export default function Login() {
       <h1 className="text-center font-bold pt-2 text-3xl"> {t("Login")}</h1>
       <form
         onSubmit={handleSubmit(async (data) => {
-          let res = await login(data);
-          if (res === null) setError("wrong credentials");
+          dispatch(login(data));
         })}
       >
         <div className=" flex flex-col items-center py-4 mt-4">

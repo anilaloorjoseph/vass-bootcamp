@@ -1,8 +1,10 @@
 "use client";
 import Tasks from "../components/Tasks";
 import { use, useEffect } from "react";
-import { useTasks } from "../context/useContext";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import SearchTasks from "../components/SearchTasks";
 
 export default function page({
   params,
@@ -10,14 +12,19 @@ export default function page({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = use(params);
-  const { isLoggedIn, isLoading } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn === null) {
+    if (isLoggedIn === null) {
       router.push(`/${locale}`);
     }
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn]);
 
-  return <Tasks locale={locale} />;
+  return (
+    <>
+      <SearchTasks />
+      <Tasks locale={locale} />
+    </>
+  );
 }

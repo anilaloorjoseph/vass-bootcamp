@@ -1,13 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useTasks } from "../context/useContext";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import { registerUser } from "../../../redux/slices/userSlice";
 
 export default function Register() {
-  const { registerUser } = useTasks();
   const [error, setError] = useState<string>();
   const t = useTranslations("translations");
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
@@ -34,14 +36,15 @@ export default function Register() {
             return false;
           }
           const roles = ["user"];
-          let res = await registerUser({
-            username,
-            password,
-            firstname,
-            lastname,
-            roles,
-          });
-          if (res === null) setError("passwords are matching");
+          dispatch(
+            registerUser({
+              username,
+              password,
+              firstname,
+              lastname,
+              roles,
+            })
+          );
         })}
       >
         <div className=" flex flex-col items-center py-4 mt-4">

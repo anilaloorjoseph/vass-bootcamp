@@ -1,21 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
-import { UserData } from "../types/typescript";
-import { useTasks } from "../context/useContext";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 
 export default function Users({ locale }: { locale: string }) {
-  const [users, setUsers] = useState<UserData[]>([]);
-  const { getUsers } = useTasks();
+  const dispatch = useDispatch<AppDispatch>();
+  const { users } = useSelector(selectUser);
   const t = useTranslations("translations");
 
   useEffect(() => {
-    async function fetchUsers() {
-      const data = await getUsers();
-      setUsers(data);
-    }
-    fetchUsers();
+    dispatch(getUsers());
   }, []);
 
   return users && users.length != 0 ? (

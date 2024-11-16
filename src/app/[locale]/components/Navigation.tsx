@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useTasks } from "../context/useContext";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
+import { logout, selectAuth } from "../../../redux/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
 
 export default function Navigation({ locale }: { locale: string }) {
-  const { isLoggedIn, logout } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
+  const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = Boolean(isLoggedIn?._id);
   const isAdmin = isAuthenticated && isLoggedIn.roles.includes("admin");
   const t = useTranslations("translations");
@@ -47,7 +50,7 @@ export default function Navigation({ locale }: { locale: string }) {
           {isLoggedIn?.firstname} {isLoggedIn?.lastname}
         </small>
         <small
-          onClick={logout}
+          onClick={() => dispatch(logout())}
           className="p-2 text-base font-bold text-sky-600 cursor-pointer"
         >
           {t("Logout")}

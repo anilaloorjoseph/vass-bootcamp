@@ -19,11 +19,12 @@ export async function loginAction({
     const user = await User.findOne({ username, password }).select(
       "username firstname lastname roles"
     );
+
     if (!user) return null;
     const data = JSON.parse(JSON.stringify(user));
     return data;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 }
 
@@ -197,6 +198,32 @@ export async function getTranslationAction(language: string) {
   try {
     const data = await Language.findOne({ language });
     if (!data) return null;
+    const res = JSON.parse(JSON.stringify(data));
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function searchUsersAction(keyword: string, sort: string) {
+  try {
+    const filter = { username: { $regex: keyword, $options: "i" } };
+    const data = await User.find({ ...filter })
+      .select("-password")
+      .sort({ username: sort === "asc" ? 1 : -1 });
+    const res = JSON.parse(JSON.stringify(data));
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function searchTasksAction(keyword: string, sort: string) {
+  try {
+    const filter = { title: { $regex: keyword, $options: "i" } };
+    const data = await Task.find({ ...filter }).sort({
+      title: sort === "asc" ? 1 : -1,
+    });
     const res = JSON.parse(JSON.stringify(data));
     return res;
   } catch (error) {

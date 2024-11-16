@@ -12,7 +12,6 @@ export type TaskData = {
 export type Context = {
   isLoggedIn: UserData;
   isLoading: boolean;
-
   login: ({
     username,
     password,

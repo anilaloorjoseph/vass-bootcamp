@@ -2,16 +2,19 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { type UserData } from "../types/typescript";
-import { useTasks } from "../context/useContext";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../redux/store";
+import { createTask, selectTask } from "../../../redux/slices/taskSlice";
+import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 
 export default function CreateTask({ locale }: { locale: string }) {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
-  const [users, setUsers] = useState<UserData[]>([]);
   const t = useTranslations("translations");
 
-  const { createTask, getUsers } = useTasks();
+  const dispatch = useDispatch<AppDispatch>();
+  const { createTaskId } = useSelector(selectTask);
+  const { users } = useSelector(selectUser);
 
   const {
     register,
@@ -32,22 +35,17 @@ export default function CreateTask({ locale }: { locale: string }) {
     setTimeout(() => {
       setTasksUpdated(false);
     }, 4000);
-  }, [tasksUpdated]);
+  }, [createTaskId]);
 
   useEffect(() => {
-    async function fetchData() {
-      let data = await getUsers();
-      setUsers(data);
-    }
-    fetchData();
+    dispatch(getUsers());
   }, []);
 
   return (
     <div className="container w-2/4 m-auto">
       <form
         onSubmit={handleSubmit(async (data) => {
-          let taskId = await createTask(data);
-          if (taskId) setTasksUpdated(true);
+          dispatch(createTask(data));
         })}
       >
         <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
@@ -147,7 +145,7 @@ export default function CreateTask({ locale }: { locale: string }) {
         <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
           {t("New_Task_has_been_added")}
           <Link href={`/${locale}/task-list`} className="text-cyan-300">
-            {t("Click_here")}
+            &nbsp;{t("Click_here")}&nbsp;
           </Link>
           {t("to_the_Task_list")}
         </div>

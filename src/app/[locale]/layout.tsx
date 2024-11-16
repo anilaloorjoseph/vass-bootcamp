@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
-import { TaskProvider } from "./context/useContext";
 import Navigation from "./components/Navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { StoreProvider } from "../../redux/StoreProvider";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -32,16 +32,16 @@ export default async function RootLayout({
   const messages = await getMessages();
   return (
     <html lang={locale}>
-      <TaskProvider locale={locale}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <StoreProvider>
           <NextIntlClientProvider messages={messages}>
             <Navigation locale={locale} />
             {children}
           </NextIntlClientProvider>
-        </body>
-      </TaskProvider>
+        </StoreProvider>
+      </body>
     </html>
   );
 }

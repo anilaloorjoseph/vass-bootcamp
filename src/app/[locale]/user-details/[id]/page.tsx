@@ -6,16 +6,25 @@ import { UserData } from "../../types/typescript";
 import { useForm } from "react-hook-form";
 import { MdDelete } from "react-icons/md";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../../redux/store";
+import { selectAuth } from "../../../../redux/slices/authSlice";
+import {
+  addUserRole,
+  deleteUserRole,
+  getUser,
+  selectUser,
+} from "../../../../redux/slices/userSlice";
 
 export default function page({
   params,
 }: {
   params: Promise<{ id: string; locale: string }>;
 }) {
-  const [user, setUser] = useState<UserData>();
   const { id, locale } = use(params);
-  const { isLoggedIn, isLoading, getUser, addUserRole, deleteUserRole } =
-    useTasks();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useSelector(selectAuth);
+  const { user } = useSelector(selectUser);
   const router = useRouter();
   const [warning, setWarning] = useState<string>();
   const t = useTranslations("translations");
@@ -32,8 +41,7 @@ export default function page({
       setWarning(`${role} role exists`);
       return false;
     }
-    const userId = await addUserRole(id, role);
-    if (userId) user?.roles.push(role);
+    dispatch(addUserRole({ id, role }));
   };
 
   const handleDeleteRole = async (userId: string, role: string) => {
@@ -41,26 +49,23 @@ export default function page({
       setWarning(`${role} can't be deleted!`);
       return false;
     }
-    const user = await deleteUserRole(userId, role);
-    if (user) setUser(user);
+    dispatch(deleteUserRole({ id: userId, role }));
   };
 
   useEffect(() => {
-    if (!isLoading && isLoading === null) {
+    if (isLoggedIn === null) {
       router.push(`/${locale}`);
     }
     if (isLoggedIn?.roles.includes("admin") === false) {
       router.push(`/${locale}/task-list`);
     }
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn]);
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await getUser(id);
-      setUser(data);
-    }
-    fetchData();
+    dispatch(getUser(id));
   }, [id]);
+
+  useEffect(() => {}, [user]);
 
   return (
     <>
@@ -120,7 +125,7 @@ export default function page({
                 className="p-2 my-2"
               >
                 <option value="user" disabled>
-                  {t("User-Default")}
+                  {t("User_Default")}
                 </option>
                 <option value="manager">{t("Manager")}</option>
               </select>

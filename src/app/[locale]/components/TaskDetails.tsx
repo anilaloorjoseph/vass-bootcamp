@@ -2,14 +2,23 @@
 import { useState, useEffect } from "react";
 import { type TaskData, type UserData } from "../types/typescript";
 import { useForm } from "react-hook-form";
-import { useTasks } from "../context/useContext";
 import { useTranslations } from "next-intl";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import { AppDispatch } from "../../../redux/store";
+import {
+  getTask,
+  selectTask,
+  updateTask,
+} from "../../../redux/slices/taskSlice";
+import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 
 export default function TaskDetails({ id }: { id: string }) {
-  const [task, setTask] = useState<TaskData>();
   const [edit, setEdit] = useState<boolean>(false);
-  const [users, setUsers] = useState<UserData[]>([]);
-  const { getTask, updateTask, getUsers, isLoggedIn } = useTasks();
+  const { isLoggedIn } = useSelector(selectAuth);
+  const { task } = useSelector(selectTask);
+  const { users } = useSelector(selectUser);
+  const dispatch = useDispatch<AppDispatch>();
   const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(false);
   const t = useTranslations("translations");
@@ -37,23 +46,12 @@ export default function TaskDetails({ id }: { id: string }) {
   });
 
   const onSubmit = async (data: TaskData) => {
-    try {
-      const res = await updateTask(data);
-      if (res) {
-        setEdit(false);
-        setTask(res);
-      }
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
+    dispatch(updateTask(data));
+    setEdit(false);
   };
 
   useEffect(() => {
-    async function fetchData() {
-      let data = await getUsers();
-      setUsers(data);
-    }
-    fetchData();
+    dispatch(getUsers());
 
     if (
       isLoggedIn?.roles.includes("manager") ??
@@ -67,17 +65,8 @@ export default function TaskDetails({ id }: { id: string }) {
   }, []);
 
   useEffect(() => {
-    async function fetchTask() {
-      try {
-        const data = await getTask(id);
-        setTask(data);
-        reset(data);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    }
-
-    fetchTask();
+    dispatch(getTask(id));
+    reset(task);
   }, [reset, id]);
 
   return (
