@@ -1,3 +1,4 @@
+"use client";
 import { useForm } from "react-hook-form";
 import { MdSearch } from "react-icons/md";
 import { searchUsers } from "../../../redux/slices/userSlice";
@@ -18,7 +19,7 @@ export default function SearchUsers() {
   });
 
   return (
-    <div className="container flex flex-col items-center w-full my-2 py-4">
+    <div className="container mx-auto flex flex-col items-center w-full my-2 py-4">
       <h2 className="font-semibold">Search users</h2>
       <form
         className="border flex items-center"

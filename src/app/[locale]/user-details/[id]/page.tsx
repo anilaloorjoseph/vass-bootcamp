@@ -1,8 +1,6 @@
 "use client";
-import { useTasks } from "../../context/useContext";
 import { useRouter } from "next/navigation";
 import { useEffect, use, useState } from "react";
-import { UserData } from "../../types/typescript";
 import { useForm } from "react-hook-form";
 import { MdDelete } from "react-icons/md";
 import { useTranslations } from "next-intl";
@@ -16,12 +14,12 @@ import {
   selectUser,
 } from "../../../../redux/slices/userSlice";
 
-export default function page({
+export default async function page({
   params,
 }: {
   params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id, locale } = use(params);
+  const { id, locale } = await params;
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector(selectAuth);
   const { user } = useSelector(selectUser);

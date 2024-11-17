@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { createTask, selectTask } from "../../../redux/slices/taskSlice";
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
+import { useRouter } from "next/navigation";
+import { selectAuth } from "../../../redux/slices/authSlice";
 
 export default function CreateTask({ locale }: { locale: string }) {
   const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
@@ -15,6 +17,8 @@ export default function CreateTask({ locale }: { locale: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { createTaskId } = useSelector(selectTask);
   const { users } = useSelector(selectUser);
+  const { isLoggedIn } = useSelector(selectAuth);
+  const router = useRouter();
 
   const {
     register,
@@ -30,6 +34,15 @@ export default function CreateTask({ locale }: { locale: string }) {
       assignedTo: "",
     },
   });
+
+  useEffect(() => {
+    if (isLoggedIn === null) {
+      router.push(`/${locale}`);
+    }
+    if (isLoggedIn?.roles.includes("admin") === false) {
+      router.push(`/${locale}/task-list`);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setTimeout(() => {

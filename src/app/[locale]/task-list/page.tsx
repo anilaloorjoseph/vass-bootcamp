@@ -1,30 +1,21 @@
-"use client";
+"use server";
 import Tasks from "../components/Tasks";
-import { use, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { selectAuth } from "../../../redux/slices/authSlice";
 import SearchTasks from "../components/SearchTasks";
+import { getAllTasksAction } from "../actions/actions";
 
-export default function page({
+export default async function page({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = use(params);
-  const { isLoggedIn } = useSelector(selectAuth);
-  const router = useRouter();
+  const initialTasks = await getAllTasksAction();
 
-  useEffect(() => {
-    if (isLoggedIn === null) {
-      router.push(`/${locale}`);
-    }
-  }, [isLoggedIn]);
+  const { locale } = await params;
 
   return (
     <>
       <SearchTasks />
-      <Tasks locale={locale} />
+      <Tasks locale={locale} initialTasks={initialTasks} />
     </>
   );
 }

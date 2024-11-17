@@ -12,8 +12,15 @@ import {
   updateTask,
 } from "../../../redux/slices/taskSlice";
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
+import { useRouter } from "next/navigation";
 
-export default function TaskDetails({ id }: { id: string }) {
+export default function TaskDetails({
+  id,
+  locale,
+}: {
+  id: string;
+  locale: string;
+}) {
   const [edit, setEdit] = useState<boolean>(false);
   const { isLoggedIn } = useSelector(selectAuth);
   const { task } = useSelector(selectTask);
@@ -22,6 +29,7 @@ export default function TaskDetails({ id }: { id: string }) {
   const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(false);
   const t = useTranslations("translations");
+  const router = useRouter();
 
   const enableEditMode = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,6 +76,12 @@ export default function TaskDetails({ id }: { id: string }) {
     dispatch(getTask(id));
     reset(task);
   }, [reset, id]);
+
+  useEffect(() => {
+    if (isLoggedIn === null) {
+      router.push(`/${locale}`);
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="container mx-auto w-2/4 border p-4 my-4 ">

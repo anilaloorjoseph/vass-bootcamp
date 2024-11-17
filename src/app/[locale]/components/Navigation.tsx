@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { logout, selectAuth } from "../../../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
+import { persistor } from "../../../redux/store";
 
 export default function Navigation({ locale }: { locale: string }) {
   const { isLoggedIn } = useSelector(selectAuth);
@@ -19,6 +20,11 @@ export default function Navigation({ locale }: { locale: string }) {
     const newLocale = e.target.value;
     const path = pathname.split("/").slice(2).join("/");
     router.push(`/${newLocale}/${path}`);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    persistor.purge();
   };
 
   const AuthenticatedLinks = () => (
@@ -50,7 +56,7 @@ export default function Navigation({ locale }: { locale: string }) {
           {isLoggedIn?.firstname} {isLoggedIn?.lastname}
         </small>
         <small
-          onClick={() => dispatch(logout())}
+          onClick={() => handleLogout()}
           className="p-2 text-base font-bold text-sky-600 cursor-pointer"
         >
           {t("Logout")}

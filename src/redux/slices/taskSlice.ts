@@ -29,16 +29,7 @@ const initialState: initialState = {
     createdOn: "",
     status: "",
   },
-  tasks: [
-    {
-      _id: "",
-      title: "",
-      description: "",
-      type: "",
-      createdOn: "",
-      status: "",
-    },
-  ],
+  tasks: [],
   pending: "",
   rejected: "",
   deleteFlag: false,
@@ -84,7 +75,13 @@ export const searchTasks = createAsyncThunk(
 export const task = createSlice({
   name: "task",
   initialState,
-  reducers: {},
+  reducers: {
+    setTasks: (state, action: PayloadAction<TaskData[]>) => {
+      return produce(state, (draft) => {
+        draft.tasks = action.payload;
+      });
+    },
+  },
   extraReducers: (builder) =>
     builder
       .addCase(getAllTasks.pending, (state) => {
@@ -210,5 +207,5 @@ export const task = createSlice({
 });
 
 export const selectTask = (state: RootState) => state.taskReducer;
-export const {} = task.actions;
+export const { setTasks } = task.actions;
 export default task.reducer;

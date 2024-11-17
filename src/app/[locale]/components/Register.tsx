@@ -1,15 +1,20 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { registerUser } from "../../../redux/slices/userSlice";
+import { selectAuth } from "../../../redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
-export default function Register() {
+export default function Register({ locale }: { locale: string }) {
   const [error, setError] = useState<string>();
   const t = useTranslations("translations");
   const dispatch = useDispatch<AppDispatch>();
+
+  const router = useRouter();
+  const { isLoggedIn } = useSelector(selectAuth);
 
   const {
     register,
@@ -24,6 +29,12 @@ export default function Register() {
       lastname: "",
     },
   });
+
+  useEffect(() => {
+    if (isLoggedIn && isLoggedIn._id) {
+      router.push(`/${locale}/task-list`);
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="container mx-auto w-3/4 sm:w-2/5 xl:w-1/4  border my-4 p-4">

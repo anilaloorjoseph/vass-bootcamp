@@ -5,13 +5,22 @@ import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { login, selectAuth } from "../../../redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
-export default function Login() {
+export default function Login({ locale }: { locale: string }) {
   const [error, setError] = useState<string>();
   const t = useTranslations("translations");
 
   const dispatch = useDispatch<AppDispatch>();
   const { rejected } = useSelector(selectAuth);
+  const router = useRouter();
+  const { isLoggedIn } = useSelector(selectAuth);
+
+  useEffect(() => {
+    if (isLoggedIn && isLoggedIn._id) {
+      router.push(`/${locale}/task-list`);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setError(rejected);

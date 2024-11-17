@@ -1,24 +1,12 @@
-"use client";
+"use server";
 import Login from "../components/Login";
-import { useEffect, use } from "react";
-import { useRouter } from "next/navigation";
-import { selectAuth } from "../../../redux/slices/authSlice";
-import { useSelector } from "react-redux";
 
-export default function page({
+export default async function page({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = use(params);
-  const router = useRouter();
-  const { isLoggedIn } = useSelector(selectAuth);
+  const { locale } = await params;
 
-  useEffect(() => {
-    if (isLoggedIn && isLoggedIn._id) {
-      router.push(`/${locale}/task-list`);
-    }
-  }, [isLoggedIn]);
-
-  return <Login />;
+  return <Login locale={locale} />;
 }

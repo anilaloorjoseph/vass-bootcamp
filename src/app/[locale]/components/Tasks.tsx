@@ -10,17 +10,30 @@ import {
   deleteTask,
   getAllTasks,
   selectTask,
+  setTasks,
 } from "../../../redux/slices/taskSlice";
+import { useRouter } from "next/navigation";
+import { TaskData } from "../types/typescript";
 
-export default function Tasks({ locale }: { locale: string }) {
+export default function Tasks({
+  locale,
+  initialTasks,
+}: {
+  locale: string;
+  initialTasks: TaskData[];
+}) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector(selectAuth);
   const { tasks, deleteFlag } = useSelector(selectTask);
   const [authorisedUser, setAuthorisedUser] = useState<boolean>();
   const [admin, setAdmin] = useState<boolean>();
   const t = useTranslations("translations");
+  const router = useRouter();
 
   useEffect(() => {
+    if (isLoggedIn === null) {
+      router.push(`/${locale}`);
+    }
     if (
       isLoggedIn?.roles.includes("admin") ??
       isLoggedIn?.roles.includes("manager")
@@ -30,10 +43,15 @@ export default function Tasks({ locale }: { locale: string }) {
     if (isLoggedIn?.roles.includes("admin")) {
       setAdmin(true);
     }
+    if (initialTasks.length > 0) {
+      dispatch(setTasks(initialTasks));
+    } else {
+      dispatch(getAllTasks());
+    }
   }, []);
 
   useEffect(() => {
-    if (deleteFlag) {
+    if (deleteFlag === true) {
       dispatch(getAllTasks());
     }
   }, [deleteFlag]);
@@ -42,7 +60,7 @@ export default function Tasks({ locale }: { locale: string }) {
     <div className="w-2/4 mx-auto p-4">
       <p className="font-bold text-center py-4">{t("Tasks")}</p>
 
-      {tasks &&
+      {tasks.length > 0 &&
         tasks
           .slice()
           .reverse()
