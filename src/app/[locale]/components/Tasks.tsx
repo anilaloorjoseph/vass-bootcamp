@@ -43,10 +43,10 @@ export default function Tasks({
     if (isLoggedIn?.roles.includes("admin")) {
       setAdmin(true);
     }
-    if (initialTasks.length > 0) {
-      dispatch(setTasks(initialTasks));
-    } else {
+    if (tasks.length > 0) {
       dispatch(getAllTasks());
+    } else {
+      dispatch(setTasks(initialTasks));
     }
   }, []);
 

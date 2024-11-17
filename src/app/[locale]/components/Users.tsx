@@ -33,10 +33,10 @@ export default function Users({
     if (isLoggedIn?.roles.includes("admin") === false) {
       router.push(`/${locale}/task-list`);
     }
-    if (initialUsers.length > 0) {
-      dispatch(setUsers(initialUsers));
-    } else {
+    if (users.length > 0) {
       dispatch(getUsers());
+    } else {
+      dispatch(setUsers(initialUsers));
     }
   }, [isLoggedIn]);
 

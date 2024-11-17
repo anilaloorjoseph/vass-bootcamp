@@ -11,13 +11,13 @@ import { useRouter } from "next/navigation";
 import { selectAuth } from "../../../redux/slices/authSlice";
 
 export default function CreateTask({ locale }: { locale: string }) {
-  const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
   const t = useTranslations("translations");
 
   const dispatch = useDispatch<AppDispatch>();
   const { createTaskId } = useSelector(selectTask);
   const { users } = useSelector(selectUser);
   const { isLoggedIn } = useSelector(selectAuth);
+  const [notify, setNotify] = useState<boolean>(false);
   const router = useRouter();
 
   const {
@@ -46,7 +46,7 @@ export default function CreateTask({ locale }: { locale: string }) {
 
   useEffect(() => {
     setTimeout(() => {
-      setTasksUpdated(false);
+      setNotify((prev) => !prev);
     }, 4000);
   }, [createTaskId]);
 
@@ -59,6 +59,7 @@ export default function CreateTask({ locale }: { locale: string }) {
       <form
         onSubmit={handleSubmit(async (data) => {
           dispatch(createTask(data));
+          setNotify(true);
         })}
       >
         <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
@@ -154,7 +155,7 @@ export default function CreateTask({ locale }: { locale: string }) {
           </button>
         </div>
       </form>
-      {tasksUpdated && (
+      {notify && (
         <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
           {t("New_Task_has_been_added")}
           <Link href={`/${locale}/task-list`} className="text-cyan-300">
