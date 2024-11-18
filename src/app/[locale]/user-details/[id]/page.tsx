@@ -14,12 +14,12 @@ import {
   selectUser,
 } from "../../../../redux/slices/userSlice";
 
-export default async function page({
+export default function page({
   params,
 }: {
   params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id, locale } = await params;
+  const { id, locale } = use(params);
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector(selectAuth);
   const { user } = useSelector(selectUser);
