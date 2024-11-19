@@ -27,8 +27,13 @@ const taskSchema = new mongoose.Schema<TaskData>({
     required: false,
     ref: "User",
   },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: "Group",
+  },
 });
 
-const Task = mongoose.models.Task ?? mongoose.model("Task", taskSchema);
+const Task = mongoose.models.Task || mongoose.model("Task", taskSchema);
 
 export default Task;

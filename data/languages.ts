@@ -41,6 +41,9 @@ const languages = [
       Manager: "Manager",
       User_Default: "User-Default",
       Add_Role: "Add Role",
+      Group: "Group",
+      Add_group_to_the_user: "Add group to the user",
+      Add_Group: "Add Group",
     },
   },
   {
@@ -85,6 +88,9 @@ const languages = [
       Manager: "Vadītājs",
       User_Default: "Lietotājs-Noklusējums",
       Add_Role: "Pievienot Lomu",
+      Group: "Grupa",
+      Add_group_to_the_user: "Pievienot lietotājam grupu",
+      Add_Group: "Pievienot grupu",
     },
   },
 ];

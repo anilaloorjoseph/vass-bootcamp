@@ -51,6 +51,14 @@ export default function Navigation({ locale }: { locale: string }) {
           {t("Users_List")}
         </Link>
       )}
+      {isAdmin && (
+        <Link
+          href={`/${locale}/group-list`}
+          className="p-2 font-bold hover:text-sky-600"
+        >
+          {t("Group")}
+        </Link>
+      )}
       <div className="ms-auto flex items-center">
         <small className="p-2 text-base font-bold text-green-600">
           {isLoggedIn?.firstname} {isLoggedIn?.lastname}

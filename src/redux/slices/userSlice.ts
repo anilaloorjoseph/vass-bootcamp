@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  addUserGroupAction,
   addUserRoleAction,
   deleteUserRoleAction,
   getUserAction,
@@ -47,8 +48,8 @@ export const registerUser = createAsyncThunk(
 
 export const addUserRole = createAsyncThunk(
   "user/adduserrole",
-  async ({ id, role }: { id: string; role: string }) => {
-    return await addUserRoleAction(id, role);
+  async ({ userId, role }: { userId: string; role: string }) => {
+    return await addUserRoleAction(userId, role);
   }
 );
 
@@ -63,6 +64,13 @@ export const searchUsers = createAsyncThunk(
   "user/searchusers",
   async ({ keyword, sort }: { keyword: string; sort: string }) => {
     return await searchUsersAction(keyword, sort);
+  }
+);
+
+export const addUserGroup = createAsyncThunk(
+  "user/addusergroup",
+  async ({ groupId, userId }: { groupId: string; userId: string }) => {
+    return await addUserGroupAction(groupId, userId);
   }
 );
 
@@ -196,6 +204,26 @@ export const user = createSlice({
         }
       )
       .addCase(searchUsers.rejected, (state, action: PayloadAction<any>) => {
+        return produce(state, (draft) => {
+          draft.rejected = action.payload || "something went wrong";
+        });
+      })
+      .addCase(addUserGroup.pending, (state) => {
+        return produce(state, (draft) => {
+          draft.pending = "pending";
+        });
+      })
+      .addCase(
+        addUserGroup.fulfilled,
+        (state, action: PayloadAction<UserData>) => {
+          return produce(state, (draft) => {
+            draft.pending = "";
+            draft.rejected = "";
+            draft.user = action.payload;
+          });
+        }
+      )
+      .addCase(addUserGroup.rejected, (state, action: PayloadAction<any>) => {
         return produce(state, (draft) => {
           draft.rejected = action.payload || "something went wrong";
         });

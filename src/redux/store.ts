@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "./slices/userSlice";
 import taskReducer from "./slices/taskSlice";
 import authReducer from "./slices/authSlice";
+import groupReducer from "./slices/groupSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -12,7 +13,7 @@ const persistConfig = {
 
 const rootReducer = persistReducer(
   persistConfig,
-  combineReducers({ authReducer, userReducer, taskReducer })
+  combineReducers({ authReducer, userReducer, taskReducer, groupReducer })
 );
 
 export const store = configureStore({

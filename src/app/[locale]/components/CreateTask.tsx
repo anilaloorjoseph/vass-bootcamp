@@ -9,6 +9,8 @@ import { createTask, selectTask } from "../../../redux/slices/taskSlice";
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 import { useRouter } from "next/navigation";
 import { selectAuth } from "../../../redux/slices/authSlice";
+import { selectGroup } from "../../../redux/slices/groupSlice";
+import { UserData } from "../types/typescript";
 
 export default function CreateTask({ locale }: { locale: string }) {
   const t = useTranslations("translations");
@@ -18,12 +20,15 @@ export default function CreateTask({ locale }: { locale: string }) {
   const { users } = useSelector(selectUser);
   const { isLoggedIn } = useSelector(selectAuth);
   const [notify, setNotify] = useState<boolean>(false);
+  const { groups } = useSelector(selectGroup);
+  const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({
     defaultValues: {
       title: "",
@@ -32,6 +37,7 @@ export default function CreateTask({ locale }: { locale: string }) {
       createdOn: "",
       status: "",
       assignedTo: "",
+      group: "",
     },
   });
 
@@ -53,6 +59,17 @@ export default function CreateTask({ locale }: { locale: string }) {
   useEffect(() => {
     dispatch(getUsers());
   }, []);
+
+  const selectedGroupId = watch("group");
+
+  useEffect(() => {
+    if (selectedGroupId) {
+      const groupUsers = users.filter((user) => user.group === selectedGroupId);
+      setFilteredUsers(groupUsers);
+    } else {
+      setFilteredUsers([]);
+    }
+  }, [selectedGroupId, users]);
 
   return (
     <div className="container w-2/4 m-auto">
@@ -131,22 +148,45 @@ export default function CreateTask({ locale }: { locale: string }) {
             {errors.status?.message}
           </small>
           <select
+            {...register("group", {
+              required: "This is required",
+            })}
+            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+          >
+            <option value="">--select group--</option>
+            {groups &&
+              groups.map(({ groupName, _id }, index) => (
+                <option key={index} value={_id}>
+                  {groupName}
+                </option>
+              ))}
+          </select>
+          <small className="block text-center text-red-950">
+            {errors.group?.message}
+          </small>
+          <select
             {...register("assignedTo", {
               required: "This is required",
             })}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
           >
             <option value="">--select user--</option>
-            {users &&
-              users.map(({ username, _id }, index) => (
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map(({ username, _id }, index) => (
                 <option key={index} value={_id}>
                   {username}
                 </option>
-              ))}
+              ))
+            ) : (
+              <option value="" disabled>
+                No users available
+              </option>
+            )}
           </select>
           <small className="block text-center text-red-950">
             {errors.assignedTo?.message}
           </small>
+
           <button
             type="submit"
             className="bg-slate-500 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"

@@ -49,8 +49,12 @@ export const deleteTask = createAsyncThunk(
 
 export const createTask = createAsyncThunk(
   "task/createtask",
-  async (task: TaskData) => {
-    return await createTaskAction(task);
+  async (task: TaskData, { rejectWithValue }) => {
+    try {
+      return await createTaskAction(task);
+    } catch (error: any) {
+      rejectWithValue(error || "Error at creating task");
+    }
   }
 );
 

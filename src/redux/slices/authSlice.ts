@@ -19,8 +19,15 @@ const initialState: initialState = {
 
 export const login = createAsyncThunk(
   "user/login",
-  async ({ username, password }: { username: string; password: string }) => {
-    return await loginAction({ username, password });
+  async (
+    { username, password }: { username: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await loginAction({ username, password });
+    } catch (error: any) {
+      rejectWithValue(error);
+    }
   }
 );
 

@@ -13,6 +13,7 @@ import {
 } from "../../../redux/slices/taskSlice";
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 import { useRouter } from "next/navigation";
+import { selectGroup } from "../../../redux/slices/groupSlice";
 
 export default function TaskDetails({
   id,
@@ -25,11 +26,13 @@ export default function TaskDetails({
   const { isLoggedIn } = useSelector(selectAuth);
   const { task } = useSelector(selectTask);
   const { users } = useSelector(selectUser);
+  const { groups } = useSelector(selectGroup);
   const dispatch = useDispatch<AppDispatch>();
   const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(false);
   const t = useTranslations("translations");
   const router = useRouter();
+  const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
 
   const enableEditMode = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,6 +45,7 @@ export default function TaskDetails({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({
     defaultValues: {
       title: task?.title,
@@ -50,6 +54,7 @@ export default function TaskDetails({
       createdOn: task?.createdOn,
       status: task?.status,
       assignedTo: task?.assignedTo,
+      group: task?.group?._id,
     },
   });
 
@@ -82,6 +87,17 @@ export default function TaskDetails({
       router.push(`/${locale}`);
     }
   }, [isLoggedIn]);
+
+  const selectedGroupId = watch("group");
+
+  useEffect(() => {
+    if (selectedGroupId) {
+      const groupUsers = users.filter((user) => user.group === selectedGroupId);
+      setFilteredUsers(groupUsers);
+    } else {
+      setFilteredUsers([]);
+    }
+  }, [selectedGroupId, users]);
 
   return (
     <div className="container mx-auto w-2/4 border p-4 my-4 ">
@@ -197,6 +213,33 @@ export default function TaskDetails({
                 </small>
               )}
             </div>
+
+            <hr />
+            <div className="text-center flex justify-between py-2">
+              <p className="font-semibold w-1/2 items-center flex">
+                {t("Group")}:
+              </p>
+              {!edit ? (
+                <p>{task?.group?.groupName ?? "UNASSIGNED"}</p>
+              ) : (
+                authorisedUser && (
+                  <select
+                    {...register("group")}
+                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+                    defaultValue={task?.group?._id ?? ""}
+                  >
+                    <option value="">UNASSIGNED</option>
+                    {groups &&
+                      groups.map(({ groupName, _id }, index) => (
+                        <option key={index} value={_id}>
+                          {groupName}
+                        </option>
+                      ))}
+                  </select>
+                )
+              )}
+            </div>
+            <hr />
             <div className="text-center flex justify-between py-2">
               <p className="font-semibold w-1/2 items-center flex">
                 {t("assignedTo")}:
@@ -211,18 +254,22 @@ export default function TaskDetails({
                     defaultValue={task?.assignedTo?._id ?? ""}
                   >
                     <option value="">UNASSIGNED</option>
-                    {users &&
-                      users.map(({ username, _id }, index) => (
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map(({ username, _id }, index) => (
                         <option key={index} value={_id}>
                           {username}
                         </option>
-                      ))}
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        No users available
+                      </option>
+                    )}
                   </select>
                 )
               )}
             </div>
             <hr />
-
             <div className="text-center flex justify-between py-2">
               <p className="font-semibold w-1/2 items-center flex">
                 {t("Created_On")}:

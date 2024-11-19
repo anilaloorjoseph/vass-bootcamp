@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { selectAuth } from "../../../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,12 +30,28 @@ export default function Tasks({
   const t = useTranslations("translations");
   const router = useRouter();
 
+  const filteredTasks = useMemo(() => {
+    if (!isLoggedIn) return [];
+    return tasks.filter((task) => {
+      if (
+        isLoggedIn.roles.includes("admin") ||
+        isLoggedIn.roles.includes("manager")
+      ) {
+        return true;
+      }
+      return (
+        task.assignedTo?.toString() === isLoggedIn._id.toString() ||
+        task.group?.toString() === isLoggedIn.group?.toString()
+      );
+    });
+  }, [tasks, isLoggedIn]);
+
   useEffect(() => {
-    if (isLoggedIn === null) {
+    if (!isLoggedIn) {
       router.push(`/${locale}`);
     }
     if (
-      isLoggedIn?.roles.includes("admin") ??
+      isLoggedIn?.roles.includes("admin") ||
       isLoggedIn?.roles.includes("manager")
     ) {
       setAuthorisedUser(true);
@@ -60,19 +76,22 @@ export default function Tasks({
     <div className="w-2/4 mx-auto p-4">
       <p className="font-bold text-center py-4">{t("Tasks")}</p>
 
-      {tasks.length > 0 &&
-        tasks
+      {filteredTasks.length > 0 &&
+        filteredTasks
           .slice()
           .reverse()
           .map((value, index) => (
             <div key={index} className=" bg-slate-50 drop-shadow-md p-4 my-2">
               <div className="flex justify-between mb-2">
-                <Link
-                  href={`/${locale}/task-details/${value?._id}`}
-                  className="text-blue-600 flex items-center"
-                >
-                  <h4 className="font-semibold me-2 ">{value?.title}</h4>
-                </Link>
+                <div>
+                  <small>Title</small>
+                  <Link
+                    href={`/${locale}/task-details/${value?._id}`}
+                    className="text-blue-600 flex items-center"
+                  >
+                    <h4 className="font-semibold me-2 ">{value?.title}</h4>
+                  </Link>
+                </div>
                 <p>
                   <small>{t("Type")}:</small>
                   <br />
@@ -95,6 +114,13 @@ export default function Tasks({
                   <br />
                   {value?.createdOn}
                 </p>
+                <p>
+                  <small>{t("Group")}:</small>
+                  <br />
+                  {value?.group?.groupName}
+                </p>
+              </div>
+              <div className="flex justify-end mt-4">
                 {authorisedUser && (
                   <div className="flex  items-end">
                     {admin && (

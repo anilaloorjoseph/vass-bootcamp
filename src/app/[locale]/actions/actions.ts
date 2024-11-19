@@ -5,6 +5,7 @@ import Language from "../models/languageModel";
 import Task from "../models/taskModel";
 import User from "../models/userModel";
 import { type TaskData, type UserData } from "../types/typescript";
+import Group from "../models/groupModel";
 
 await connectDB();
 
@@ -30,9 +31,10 @@ export async function loginAction({
 
 export async function getAllTasksAction() {
   try {
-    const data = await Task.find({});
+    const data = await Task.find({}).populate({ path: "group" });
     if (!data) return null;
     const tasks = JSON.parse(JSON.stringify(data));
+
     return tasks;
   } catch (err) {
     console.error("Error fetching tasks:", err);
@@ -51,7 +53,7 @@ export async function deleteTaskAction(id: string) {
   }
 }
 
-export async function createTaskAction(task: TaskData) {
+export async function createTaskAction(task: any) {
   try {
     const data = await Task.create(task);
     const value = JSON.parse(JSON.stringify(data));
@@ -64,10 +66,12 @@ export async function createTaskAction(task: TaskData) {
 
 export async function getTaskAction(id: string) {
   try {
-    const data = await Task.findById(id).populate({
-      path: "assignedTo",
-      select: "-password",
-    });
+    const data = await Task.findById(id)
+      .populate({
+        path: "assignedTo",
+        select: "-password",
+      })
+      .populate({ path: "group" });
     if (!data) {
       throw new Error("Task not found");
     }
@@ -81,8 +85,16 @@ export async function getTaskAction(id: string) {
 
 export async function updateTaskAction(task: TaskData) {
   try {
-    const { _id, title, description, status, createdOn, type, assignedTo } =
-      task;
+    const {
+      _id,
+      title,
+      description,
+      status,
+      createdOn,
+      type,
+      assignedTo,
+      group,
+    } = task;
     const data = await Task.findById(_id);
     if (data) {
       data.title = title ?? data.title;
@@ -91,15 +103,14 @@ export async function updateTaskAction(task: TaskData) {
       data.createdOn = createdOn ?? data.createdOn;
       data.type = type ?? data.type;
       data.assignedTo = assignedTo ?? null;
+      data.group = group ?? null;
 
       await data.save();
-      const populatedData = await data.populate({
-        path: "assignedTo",
-        select: "-password",
-      });
+      const populatedData = await Task.findById(_id)
+        .populate({ path: "assignedTo", select: "-password" })
+        .populate({ path: "group" });
 
-      const response = JSON.parse(JSON.stringify(populatedData));
-      return response;
+      return JSON.parse(JSON.stringify(populatedData));
     } else {
       console.error("Task doesnt exist");
     }
@@ -144,7 +155,9 @@ export async function registerUserAction({
 
 export async function getUserAction(id: string) {
   try {
-    const data = await User.findById(id).select("-password");
+    const data = await User.findById(id)
+      .select("-password")
+      .populate({ path: "group" });
     if (!data) return null;
     const user = JSON.parse(JSON.stringify(data));
     return user;
@@ -153,9 +166,9 @@ export async function getUserAction(id: string) {
   }
 }
 
-export async function addUserRoleAction(id: string, role: string) {
+export async function addUserRoleAction(userId: string, role: string) {
   try {
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(userId).select("-password");
     if (!user) return null;
     if (user?.roles.includes(role)) {
       throw new Error("Role exists!");
@@ -226,6 +239,69 @@ export async function searchTasksAction(keyword: string, sort: string) {
     });
     const res = JSON.parse(JSON.stringify(data));
     return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function createGroupAction(groupName: string) {
+  try {
+    const data = await Group.create({ groupName });
+    if (!data) return null;
+    return JSON.parse(JSON.stringify(data));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateGroupAction(id: string, groupName: string) {
+  try {
+    const data = await Group.findById(id);
+    data.groupName = groupName || data.groupName;
+    const updatedGroup = await data.save();
+    const res = JSON.parse(JSON.stringify(updatedGroup));
+    return res;
+  } catch (error) {}
+}
+
+export async function deleteGroupAction(id: string) {
+  try {
+    const data = await Group.deleteOne({ _id: id });
+    if (!data) return null;
+    return data.acknowledged;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getAllGroupsAction() {
+  try {
+    const data = await Group.find({});
+    if (!data) return [];
+    const res = JSON.parse(JSON.stringify(data));
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getGroupAction(id: string) {
+  try {
+    const data = await Group.findById(id);
+    if (!data) return null;
+    return JSON.parse(JSON.stringify(data));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function addUserGroupAction(groupId: string, userId: string) {
+  try {
+    const data = await User.findById(userId).select("-password");
+    data.group = groupId ?? data.group;
+    await data.save();
+    const updatedUser = await data.populate({ path: "group" });
+    return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
     console.log(error);
   }

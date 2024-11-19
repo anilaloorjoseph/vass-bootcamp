@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema<UserData>({
     required: false,
     default: ["user"],
   },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: "Group",
+  },
 });
 
 const User = mongoose.models.User ?? mongoose.model("User", userSchema);
