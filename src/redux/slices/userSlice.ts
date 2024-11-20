@@ -31,46 +31,89 @@ const initialState: initialState = {
   rejected: "",
 };
 
-export const getUser = createAsyncThunk("user/getuser", async (id: string) => {
-  return await getUserAction(id);
-});
+export const getUser = createAsyncThunk(
+  "user/getuser",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await getUserAction(id);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
-export const getUsers = createAsyncThunk("user/getusers", async () => {
-  return await getUsersAction();
-});
+export const getUsers = createAsyncThunk(
+  "user/getusers",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getUsersAction();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   "user/registeruser",
-  async (user: UserData) => {
-    return await registerUserAction(user);
+  async (user: UserData, { rejectWithValue }) => {
+    try {
+      return await registerUserAction(user);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const addUserRole = createAsyncThunk(
   "user/adduserrole",
-  async ({ userId, role }: { userId: string; role: string }) => {
-    return await addUserRoleAction(userId, role);
+  async (
+    { userId, role }: { userId: string; role: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await addUserRoleAction(userId, role);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const deleteUserRole = createAsyncThunk(
   "user/deleteuserrole",
-  async ({ id, role }: { id: string; role: string }) => {
-    return await deleteUserRoleAction(id, role);
+  async ({ id, role }: { id: string; role: string }, { rejectWithValue }) => {
+    try {
+      return await deleteUserRoleAction(id, role);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const searchUsers = createAsyncThunk(
   "user/searchusers",
-  async ({ keyword, sort }: { keyword: string; sort: string }) => {
-    return await searchUsersAction(keyword, sort);
+  async (
+    { keyword, sort }: { keyword: string; sort: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await searchUsersAction(keyword, sort);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const addUserGroup = createAsyncThunk(
   "user/addusergroup",
-  async ({ groupId, userId }: { groupId: string; userId: string }) => {
-    return await addUserGroupAction(groupId, userId);
+  async (
+    { groupId, userId }: { groupId: string; userId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await addUserGroupAction(groupId, userId);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 

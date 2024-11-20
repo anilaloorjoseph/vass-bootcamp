@@ -42,8 +42,12 @@ export const getAllTasks = createAsyncThunk("task/getalltasks", async () => {
 
 export const deleteTask = createAsyncThunk(
   "task/deleteTask",
-  async (id: string) => {
-    return await deleteTaskAction(id);
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await deleteTaskAction(id);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
@@ -53,26 +57,44 @@ export const createTask = createAsyncThunk(
     try {
       return await createTaskAction(task);
     } catch (error: any) {
-      rejectWithValue(error || "Error at creating task");
+      return rejectWithValue(error || "Error at creating task");
     }
   }
 );
 
-export const getTask = createAsyncThunk("task/gettask", async (id: string) => {
-  return await getTaskAction(id);
-});
+export const getTask = createAsyncThunk(
+  "task/gettask",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await getTaskAction(id);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const updateTask = createAsyncThunk(
   "task/updatetask",
-  async (task: TaskData) => {
-    return await updateTaskAction(task);
+  async (task: TaskData, { rejectWithValue }) => {
+    try {
+      return await updateTaskAction(task);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const searchTasks = createAsyncThunk(
   "user/searchtasks",
-  async ({ keyword, sort }: { keyword: string; sort: string }) => {
-    return await searchTasksAction(keyword, sort);
+  async (
+    { keyword, sort }: { keyword: string; sort: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await searchTasksAction(keyword, sort);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 

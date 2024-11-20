@@ -31,38 +31,60 @@ const initialState: initialState = {
   createGroupId: "",
 };
 
-export const getAllGroups = createAsyncThunk("group/getallgroups", async () => {
-  return await getAllGroupsAction();
-});
+export const getAllGroups = createAsyncThunk(
+  "group/getallgroups",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getAllGroupsAction();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const getGroup = createAsyncThunk(
   "group/getgroup",
-  async (id: string) => {
-    return await getGroupAction(id);
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await getGroupAction(id);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const deleteGroup = createAsyncThunk(
   "group/deletegroup",
-  async (id: string) => {
-    return await deleteGroupAction(id);
+  async (id: string, { rejectWithValue }) => {
+    try {
+      return await deleteGroupAction(id);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const updateGroup = createAsyncThunk(
   "group/updategroup",
-  async ({ id, groupName }: { id: string; groupName: string }) => {
-    return await updateGroupAction(id, groupName);
+  async (
+    { id, groupName }: { id: string; groupName: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await updateGroupAction(id, groupName);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 
 export const createGroup = createAsyncThunk(
   "group/creategroup",
-  async ({ groupName }: { groupName: string }, thunkAPI) => {
+  async ({ groupName }: { groupName: string }, { rejectWithValue }) => {
     try {
       return await createGroupAction(groupName);
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   }
 );

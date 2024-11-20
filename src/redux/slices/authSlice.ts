@@ -26,7 +26,7 @@ export const login = createAsyncThunk(
     try {
       return await loginAction({ username, password });
     } catch (error: any) {
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
   }
 );
