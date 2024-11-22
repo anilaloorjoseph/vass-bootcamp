@@ -138,7 +138,7 @@ export default function Tasks({
               </div>
             </div>
           ))}
-      {tasks.length <= 0 && (
+      {filteredTasks.length <= 0 && (
         <small className="font-semibold text-slate-500 text-center w-full block p-4">
           {t("No_tasks")}
         </small>
