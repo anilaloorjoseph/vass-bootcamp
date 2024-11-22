@@ -8,6 +8,8 @@ import { addUserRole } from "../../../redux/slices/userSlice";
 import { selectAuth } from "../../../redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { getAllGroups } from "../../../redux/slices/groupSlice";
+import { ROLE } from "../../constants/constants";
+import CustomeSelect from "./CustomeSelect";
 
 export default function AddRoleToUser({
   locale,
@@ -17,7 +19,6 @@ export default function AddRoleToUser({
   userId: string;
 }) {
   const t = useTranslations("translations");
-  const [warning, setWarning] = useState<string>();
   const { user } = useSelector(selectUser);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -26,14 +27,19 @@ export default function AddRoleToUser({
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ role: string }>({
+    defaultValues: {
+      role: "",
+    },
+  });
 
   const handleAddRole = async (data: { role: string }) => {
     const { role } = data;
+    if (!role) return false;
     if (user?.roles.includes(role)) {
-      setWarning(`${role} role exists`);
       return false;
     }
     dispatch(addUserRole({ userId, role }));
@@ -41,10 +47,10 @@ export default function AddRoleToUser({
 
   useEffect(() => {
     if (isLoggedIn === null) {
-      router.push(`/${locale}`);
+      router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/task-list`);
+    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+      router.push(`/task-list`);
     }
     dispatch(getAllGroups());
   }, [isLoggedIn]);
@@ -56,27 +62,26 @@ export default function AddRoleToUser({
           <h2 className="font-semibold">{t("Add_role_to_the_user")}</h2>
 
           <div className="flex flex-col">
-            <select
-              {...register("role")}
-              defaultValue="user"
-              className="p-2 my-2"
-            >
-              <option value="user" disabled>
-                {t("User_Default")}
-              </option>
-              <option value="manager">{t("Manager")}</option>
-            </select>
+            <CustomeSelect
+              options={[
+                { value: ROLE.USER, label: t("User_Default") },
+                { value: ROLE.MANAGER, label: t("Manager") },
+              ]}
+              name="role"
+              control={control}
+              placeholder="Add_Role"
+            />
+            {errors.role && (
+              <small className="font-semibold text-center mt-4 text-red-500 p-2 border border-red-500">
+                {errors.role?.message}
+              </small>
+            )}
             <button
               type="submit"
               className="button border p-2 text-white bg-slate-500 hover:bg-green-600"
             >
               {t("Add_Role")}
             </button>
-            {warning && (
-              <small className="font-semibold text-center mt-4 text-red-500 p-2 border border-red-500">
-                {warning}
-              </small>
-            )}
           </div>
         </div>
       </form>

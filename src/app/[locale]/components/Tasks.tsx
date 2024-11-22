@@ -1,10 +1,10 @@
 "use client";
-import Link from "next/link";
+import { Link } from "../../../i18n/routing";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { selectAuth } from "../../../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { selectAuth } from "../../../redux/slices/authSlice";
 import { AppDispatch } from "../../../redux/store";
 import {
   deleteTask,
@@ -12,30 +12,32 @@ import {
   selectTask,
   setTasks,
 } from "../../../redux/slices/taskSlice";
-import { useRouter } from "next/navigation";
 import { TaskData } from "../types/typescript";
+import { ROLE } from "../../constants/constants";
 
 export default function Tasks({
   locale,
   initialTasks,
+  authorisedUser,
+  admin,
 }: {
   locale: string;
   initialTasks: TaskData[];
+  authorisedUser: boolean;
+  admin: boolean;
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector(selectAuth);
   const { tasks, deleteFlag } = useSelector(selectTask);
-  const [authorisedUser, setAuthorisedUser] = useState<boolean>();
-  const [admin, setAdmin] = useState<boolean>();
+
   const t = useTranslations("translations");
-  const router = useRouter();
 
   const filteredTasks = useMemo(() => {
     if (!isLoggedIn) return [];
     return tasks.filter((task) => {
       if (
-        isLoggedIn.roles.includes("admin") ||
-        isLoggedIn.roles.includes("manager")
+        isLoggedIn.roles.includes(ROLE.ADMIN) ||
+        isLoggedIn.roles.includes(ROLE.MANAGER)
       ) {
         return true;
       }
@@ -47,27 +49,15 @@ export default function Tasks({
   }, [tasks, isLoggedIn]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push(`/${locale}`);
-    }
-    if (
-      isLoggedIn?.roles.includes("admin") ||
-      isLoggedIn?.roles.includes("manager")
-    ) {
-      setAuthorisedUser(true);
-    }
-    if (isLoggedIn?.roles.includes("admin")) {
-      setAdmin(true);
-    }
-    if (tasks.length > 0) {
+    if (tasks?.length > 0) {
       dispatch(getAllTasks());
-    } else {
+    } else if (initialTasks?.length > 0) {
       dispatch(setTasks(initialTasks));
     }
-  }, []);
+  }, [initialTasks, isLoggedIn]);
 
   useEffect(() => {
-    if (deleteFlag === true) {
+    if (deleteFlag) {
       dispatch(getAllTasks());
     }
   }, [deleteFlag]);
@@ -86,7 +76,10 @@ export default function Tasks({
                 <div>
                   <small>Title</small>
                   <Link
-                    href={`/${locale}/task-details/${value?._id}`}
+                    href={{
+                      pathname: "/task-details/[id]",
+                      params: { id: value?._id },
+                    }}
                     className="text-blue-600 flex items-center"
                   >
                     <h4 className="font-semibold me-2 ">{value?.title}</h4>
@@ -132,7 +125,10 @@ export default function Tasks({
                       </p>
                     )}
                     <Link
-                      href={`/${locale}/task-details/${value?._id}`}
+                      href={{
+                        pathname: "/task-details/[id]",
+                        params: { id: value?._id },
+                      }}
                       className="flex items-center text-blue-500 font-semibold cursor-pointer"
                     >
                       {t("Edit")}: <MdEdit className="ms-2" />

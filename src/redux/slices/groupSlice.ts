@@ -206,6 +206,6 @@ export const group = createSlice({
       }),
 });
 
-export const selectGroup = (state: RootState) => state.groupReducer;
+export const selectGroup = (state: RootState) => state.group;
 export const { setGroups } = group.actions;
 export default group.reducer;

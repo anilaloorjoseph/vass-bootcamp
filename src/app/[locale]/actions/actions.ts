@@ -1,6 +1,5 @@
 "use server";
 import connectDB from "../../config/database";
-import languages from "../../../../data/languages";
 import Language from "../models/languageModel";
 import Task from "../models/taskModel";
 import User from "../models/userModel";
@@ -193,15 +192,6 @@ export async function deleteUserRoleAction(id: string, role: string) {
     const data = await user.save();
     const updatedUser = JSON.parse(JSON.stringify(data));
     return updatedUser;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function addLanguageAction() {
-  try {
-    const data = await Language.insertMany(languages);
-    console.log("Data Imported.");
   } catch (error) {
     console.log(error);
   }

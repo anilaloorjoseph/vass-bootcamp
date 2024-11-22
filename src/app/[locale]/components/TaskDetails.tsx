@@ -14,13 +14,18 @@ import {
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
 import { useRouter } from "next/navigation";
 import { selectGroup } from "../../../redux/slices/groupSlice";
+import CustomeSelect from "./CustomeSelect";
 
 export default function TaskDetails({
   id,
   locale,
+  authorisedUser,
+  admin,
 }: {
   id: string;
   locale: string;
+  authorisedUser: boolean;
+  admin: boolean;
 }) {
   const [edit, setEdit] = useState<boolean>(false);
   const { isLoggedIn } = useSelector(selectAuth);
@@ -28,8 +33,7 @@ export default function TaskDetails({
   const { users } = useSelector(selectUser);
   const { groups } = useSelector(selectGroup);
   const dispatch = useDispatch<AppDispatch>();
-  const [authorisedUser, setAuthorisedUser] = useState<boolean>(false);
-  const [admin, setAdmin] = useState<boolean>(false);
+
   const t = useTranslations("translations");
   const router = useRouter();
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
@@ -43,6 +47,7 @@ export default function TaskDetails({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
     watch,
@@ -65,28 +70,12 @@ export default function TaskDetails({
 
   useEffect(() => {
     dispatch(getUsers());
-
-    if (
-      isLoggedIn?.roles.includes("manager") ??
-      isLoggedIn?.roles.includes("admin")
-    ) {
-      setAuthorisedUser(true);
-    }
-    if (isLoggedIn?.roles.includes("admin")) {
-      setAdmin(true);
-    }
   }, []);
 
   useEffect(() => {
     dispatch(getTask(id));
     reset(task);
   }, [reset, id]);
-
-  useEffect(() => {
-    if (isLoggedIn === null) {
-      router.push(`/${locale}`);
-    }
-  }, [isLoggedIn]);
 
   const selectedGroupId = watch("group");
 
@@ -196,15 +185,12 @@ export default function TaskDetails({
                 <p> {task?.status}</p>
               ) : (
                 admin && (
-                  <select
-                    {...register("status")}
-                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                  >
-                    <option value="">{t("--select_status--")}</option>
-                    <option value="todo">{t("To_Do")}</option>
-                    <option value="inprogress">{t("In_Progress")}</option>
-                    <option value="completed">{t("Completed")}</option>
-                  </select>
+                  <CustomeSelect
+                    options={[{ value: "todo", label: t("To_Do") }]}
+                    name="status"
+                    control={control}
+                    placeholder="Status"
+                  />
                 )
               )}
               {edit && admin && (
@@ -223,19 +209,12 @@ export default function TaskDetails({
                 <p>{task?.group?.groupName ?? "UNASSIGNED"}</p>
               ) : (
                 authorisedUser && (
-                  <select
-                    {...register("group")}
-                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                    defaultValue={task?.group?._id ?? ""}
-                  >
-                    <option value="">UNASSIGNED</option>
-                    {groups &&
-                      groups.map(({ groupName, _id }, index) => (
-                        <option key={index} value={_id}>
-                          {groupName}
-                        </option>
-                      ))}
-                  </select>
+                  <CustomeSelect
+                    options={[{ value: "", label: "UNASSIGNED" }]}
+                    name="group"
+                    control={control}
+                    placeholder="Group"
+                  />
                 )
               )}
             </div>
@@ -248,24 +227,12 @@ export default function TaskDetails({
                 <p>{task?.assignedTo?.username ?? "UNASSIGNED"}</p>
               ) : (
                 authorisedUser && (
-                  <select
-                    {...register("assignedTo")}
-                    className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-                    defaultValue={task?.assignedTo?._id ?? ""}
-                  >
-                    <option value="">UNASSIGNED</option>
-                    {filteredUsers.length > 0 ? (
-                      filteredUsers.map(({ username, _id }, index) => (
-                        <option key={index} value={_id}>
-                          {username}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="" disabled>
-                        No users available
-                      </option>
-                    )}
-                  </select>
+                  <CustomeSelect
+                    options={[{ value: "", label: "UNASSIGNED" }]}
+                    name="assignedTo"
+                    control={control}
+                    placeholder="Assigned To"
+                  />
                 )
               )}
             </div>

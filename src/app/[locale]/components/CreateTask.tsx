@@ -1,16 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "../../../i18n/routing";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { createTask, selectTask } from "../../../redux/slices/taskSlice";
 import { getUsers, selectUser } from "../../../redux/slices/userSlice";
-import { useRouter } from "next/navigation";
-import { selectAuth } from "../../../redux/slices/authSlice";
 import { selectGroup } from "../../../redux/slices/groupSlice";
 import { UserData } from "../types/typescript";
+import CustomeSelect from "./CustomeSelect";
 
 export default function CreateTask({ locale }: { locale: string }) {
   const t = useTranslations("translations");
@@ -18,13 +17,12 @@ export default function CreateTask({ locale }: { locale: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { createTaskId } = useSelector(selectTask);
   const { users } = useSelector(selectUser);
-  const { isLoggedIn } = useSelector(selectAuth);
   const [notify, setNotify] = useState<boolean>(false);
   const { groups } = useSelector(selectGroup);
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
-  const router = useRouter();
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -40,15 +38,6 @@ export default function CreateTask({ locale }: { locale: string }) {
       group: "",
     },
   });
-
-  useEffect(() => {
-    if (isLoggedIn === null) {
-      router.push(`/${locale}`);
-    }
-    if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/task-list`);
-    }
-  }, [isLoggedIn]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -133,56 +122,43 @@ export default function CreateTask({ locale }: { locale: string }) {
           <small className="block text-center text-red-950">
             {errors.createdOn?.message}
           </small>
-          <select
-            {...register("status", {
-              required: "This is required",
-            })}
-            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-          >
-            <option value="">--select status--</option>
-            <option value="todo">{t("To_Do")}</option>
-            <option value="inprogress">{t("In_Progress")}</option>
-            <option value="completed">{t("Completed")}</option>
-          </select>
+
+          <CustomeSelect
+            options={[
+              { value: "todo", label: t("To_Do") },
+              { value: "inprogress", label: t("In_Progress") },
+              { value: "completed", label: t("Completed") },
+            ]}
+            name="status"
+            control={control}
+            placeholder="Select_Status"
+          />
           <small className="block text-center text-red-950">
             {errors.status?.message}
           </small>
-          <select
-            {...register("group", {
-              required: "This is required",
-            })}
-            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-          >
-            <option value="">--select group--</option>
-            {groups &&
-              groups.map(({ groupName, _id }, index) => (
-                <option key={index} value={_id}>
-                  {groupName}
-                </option>
-              ))}
-          </select>
+
+          <CustomeSelect
+            options={groups.map((group) => ({
+              value: group._id,
+              label: group.groupName,
+            }))}
+            name="group"
+            control={control}
+            placeholder="Select_Group"
+          />
           <small className="block text-center text-red-950">
             {errors.group?.message}
           </small>
-          <select
-            {...register("assignedTo", {
-              required: "This is required",
-            })}
-            className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
-          >
-            <option value="">--select user--</option>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map(({ username, _id }, index) => (
-                <option key={index} value={_id}>
-                  {username}
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                No users available
-              </option>
-            )}
-          </select>
+
+          <CustomeSelect
+            options={filteredUsers.map((user) => ({
+              value: user._id,
+              label: user.username,
+            }))}
+            name="assignedTo"
+            control={control}
+            placeholder="Select_User"
+          />
           <small className="block text-center text-red-950">
             {errors.assignedTo?.message}
           </small>
@@ -198,7 +174,7 @@ export default function CreateTask({ locale }: { locale: string }) {
       {notify && (
         <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
           {t("New_Task_has_been_added")}
-          <Link href={`/${locale}/task-list`} className="text-cyan-300">
+          <Link href={`/task-list`} className="text-cyan-300">
             &nbsp;{t("Click_here")}&nbsp;
           </Link>
           {t("to_the_Task_list")}

@@ -1,8 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth } from "../../../redux/slices/authSlice";
 import {
   createGroup,
   deleteGroup,
@@ -13,18 +11,16 @@ import {
 import { AppDispatch } from "../../../redux/store";
 import { useForm } from "react-hook-form";
 import { MdDelete, MdEdit } from "react-icons/md";
-import Link from "next/link";
+import { Link } from "../../../i18n/routing";
+import { GroupData } from "../types/typescript";
 
 export default function Groups({
   locale,
   initialGroups,
 }: {
   locale: string;
-  initialGroups: [];
+  initialGroups: GroupData[];
 }) {
-  const router = useRouter();
-
-  const { isLoggedIn } = useSelector(selectAuth);
   const { deleteFlag } = useSelector(selectGroup);
   const { groups } = useSelector(selectGroup);
   const dispatch = useDispatch<AppDispatch>();
@@ -40,18 +36,12 @@ export default function Groups({
   });
 
   useEffect(() => {
-    if (isLoggedIn === null) {
-      router.push(`/${locale}`);
-    }
-    if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/task-list`);
-    }
     if (groups.length > 0) {
       dispatch(getAllGroups());
     } else {
       dispatch(setGroups(initialGroups));
     }
-  }, [isLoggedIn]);
+  }, []);
 
   useEffect(() => {
     dispatch(getAllGroups());
@@ -71,7 +61,12 @@ export default function Groups({
             </div>
             <div className="controls flex">
               <p className="ms-2 text-blue-700 hover:text-slate-700">
-                <Link href={`/${locale}/group-details/${_id}`}>
+                <Link
+                  href={{
+                    pathname: "/group-details/[id]",
+                    params: { id: _id },
+                  }}
+                >
                   <MdEdit />
                 </Link>
               </p>

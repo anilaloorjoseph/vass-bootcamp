@@ -3,8 +3,9 @@ import createMiddleware from "next-intl/middleware";
 export default createMiddleware({
   locales: ["en", "lv"],
   defaultLocale: "en",
+  localePrefix: "always",
 });
 
 export const config = {
-  matcher: ["/", "/(en|lv)/:path*"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

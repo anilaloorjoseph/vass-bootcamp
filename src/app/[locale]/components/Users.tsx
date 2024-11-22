@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import Link from "next/link";
+import { Link } from "../../../i18n/routing";
 import { useTranslations } from "next-intl";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
@@ -9,8 +9,6 @@ import {
   selectUser,
   setUsers,
 } from "../../../redux/slices/userSlice";
-import { selectAuth } from "../../../redux/slices/authSlice";
-import { useRouter } from "next/navigation";
 import { UserData } from "../types/typescript";
 
 export default function Users({
@@ -23,22 +21,14 @@ export default function Users({
   const dispatch = useDispatch<AppDispatch>();
   const { users } = useSelector(selectUser);
   const t = useTranslations("translations");
-  const { isLoggedIn } = useSelector(selectAuth);
-  const router = useRouter();
 
   useEffect(() => {
-    if (isLoggedIn === null) {
-      router.push(`/${locale}`);
-    }
-    if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/task-list`);
-    }
     if (users.length > 0) {
       dispatch(getUsers());
     } else {
       dispatch(setUsers(initialUsers));
     }
-  }, [isLoggedIn]);
+  }, []);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -51,7 +41,13 @@ export default function Users({
         <p className="font-bold">{t("roles")}</p>
       </div>
       {users.map(({ _id, username, roles }, index) => (
-        <Link key={index} href={`/${locale}/user-details/${_id}`}>
+        <Link
+          key={index}
+          href={{
+            pathname: "/user-details/[userId]",
+            params: { userId: _id },
+          }}
+        >
           <div className="container flex flex-row justify-between mx-auto my-2 hover:bg-slate-200 p-4 bg-slate-50 w-full">
             <p>{username}</p>
             <p>

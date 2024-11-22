@@ -1,20 +1,16 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { registerUser } from "../../../redux/slices/userSlice";
-import { selectAuth } from "../../../redux/slices/authSlice";
-import { useRouter } from "next/navigation";
+import { ROLE } from "../../constants/constants";
 
 export default function Register({ locale }: { locale: string }) {
   const [error, setError] = useState<string>();
   const t = useTranslations("translations");
   const dispatch = useDispatch<AppDispatch>();
-
-  const router = useRouter();
-  const { isLoggedIn } = useSelector(selectAuth);
 
   const {
     register,
@@ -30,12 +26,6 @@ export default function Register({ locale }: { locale: string }) {
     },
   });
 
-  useEffect(() => {
-    if (isLoggedIn && isLoggedIn._id) {
-      router.push(`/${locale}/task-list`);
-    }
-  }, [isLoggedIn]);
-
   return (
     <div className="container mx-auto w-3/4 sm:w-2/5 xl:w-1/4  border my-4 p-4">
       <h1 className="text-center font-bold pt-2 text-3xl"> {t("Register")}</h1>
@@ -46,7 +36,7 @@ export default function Register({ locale }: { locale: string }) {
             setError("passwords are not matching");
             return false;
           }
-          const roles = ["user"];
+          const roles = [ROLE.USER];
           dispatch(
             registerUser({
               username,

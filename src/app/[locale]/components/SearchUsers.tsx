@@ -4,12 +4,14 @@ import { MdSearch } from "react-icons/md";
 import { searchUsers } from "../../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
+import CustomeSelect from "./CustomeSelect";
 
 export default function SearchUsers() {
   const dispatch = useDispatch<AppDispatch>();
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -33,14 +35,16 @@ export default function SearchUsers() {
           className="p-2 mx-2 border-0 outline-none"
           placeholder="Search user"
         />
-        <select
-          className="p-2 mx-2 outline-none"
-          {...register("sort")}
-          defaultValue="asc"
-        >
-          <option value="asc">Asc</option>
-          <option value="des">Dsc</option>
-        </select>
+
+        <CustomeSelect
+          options={[
+            { value: "asc", label: "Asc" },
+            { value: "des", label: "Dsc" },
+          ]}
+          name="sort"
+          control={control}
+          placeholder="Sort"
+        />
         <button type="submit" className="p-2 hover:bg-slate-300">
           <MdSearch size={25} />
         </button>

@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import { AppDispatch } from "../../../redux/store";
 import { getAllGroups, selectGroup } from "../../../redux/slices/groupSlice";
 import { addUserGroup, getUser } from "../../../redux/slices/userSlice";
-import { GroupData } from "../types/typescript";
+import { AddGroupFormData } from "../types/typescript";
+import { ROLE } from "../../constants/constants";
+import CustomeSelect from "./CustomeSelect";
 
 export default function AddGroupToUser({
   locale,
@@ -28,25 +30,27 @@ export default function AddGroupToUser({
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<AddGroupFormData>({
+    defaultValues: {
+      _id: "",
+    },
+  });
 
-  const handleAddGroup = async (data: GroupData) => {
-    if (!data._id) {
-      setWarning("select group");
-      return false;
-    }
+  const handleAddGroup = async (data: AddGroupFormData) => {
     const groupId = data._id;
+    if (!groupId) return null;
     dispatch(addUserGroup({ userId, groupId }));
   };
 
   useEffect(() => {
     if (isLoggedIn === null) {
-      router.push(`/${locale}`);
+      router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes("admin") === false) {
-      router.push(`/${locale}/task-list`);
+    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+      router.push(`/task-list`);
     }
     dispatch(getAllGroups());
   }, [isLoggedIn]);
@@ -62,29 +66,26 @@ export default function AddGroupToUser({
           <h2 className="font-semibold">{t("Add_group_to_the_user")}</h2>
 
           <div className="flex flex-col">
-            <select {...register("_id")} defaultValue="" className="p-2 my-2">
-              <option value="" disabled>
-                {t("Add_Group")}
-              </option>
-              {groups &&
-                groups.map((group, index) => (
-                  <option value={group._id} key={index}>
-                    {group.groupName}
-                  </option>
-                ))}
-            </select>
+            <CustomeSelect
+              options={groups.map((group) => ({
+                value: group._id,
+                label: group.groupName,
+              }))}
+              name="_id"
+              control={control}
+              placeholder="Add_Group"
+            />
+            {errors._id && (
+              <small className="font-semibold text-center mt-4 text-red-500 p-2 border border-red-500">
+                {errors._id?.message}
+              </small>
+            )}
             <button
               type="submit"
               className="button border p-2 text-white bg-slate-500 hover:bg-green-600"
             >
               {t("Add_Group")}
             </button>
-
-            {warning && (
-              <small className="font-semibold text-center mt-4 text-red-500 p-2 border border-red-500">
-                {warning}
-              </small>
-            )}
           </div>
         </div>
       </form>
