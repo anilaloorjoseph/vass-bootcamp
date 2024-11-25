@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import task from "../../../redux/slices/taskSlice";
 import auth from "../../../redux/slices/authSlice";
-import { isAdmin, isManager } from "../../constants/constants";
+import { isAdmin, isManager, isUser } from "../../constants/constants";
 
 const initialTasks = [
   {
