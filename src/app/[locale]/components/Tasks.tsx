@@ -13,7 +13,7 @@ import {
   setTasks,
 } from "../../../redux/slices/taskSlice";
 import { TaskData } from "../types/typescript";
-import { ROLE } from "../../constants/constants";
+import { isAdmin, isManager } from "../../constants/constants";
 
 export default function Tasks({
   locale,
@@ -36,8 +36,8 @@ export default function Tasks({
     if (!isLoggedIn) return [];
     return tasks.filter((task) => {
       if (
-        isLoggedIn.roles.includes(ROLE.ADMIN) ||
-        isLoggedIn.roles.includes(ROLE.MANAGER)
+        isLoggedIn.roles.includes(isAdmin) ||
+        isLoggedIn.roles.includes(isManager)
       ) {
         return true;
       }

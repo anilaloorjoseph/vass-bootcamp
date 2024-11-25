@@ -10,7 +10,7 @@ import { AppDispatch } from "../../../../redux/store";
 import { selectAuth } from "../../../../redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { ROLE } from "../../../constants/constants";
+import { isAdmin } from "../../../constants/constants";
 export default function page({
   params,
 }: {
@@ -39,10 +39,7 @@ export default function page({
   };
 
   useEffect(() => {
-    if (
-      isLoggedIn === null ||
-      isLoggedIn?.roles.includes(ROLE.ADMIN) === false
-    ) {
+    if (isLoggedIn === null || isLoggedIn?.roles.includes(isAdmin) === false) {
       router.push(`/`);
     }
   }, [isLoggedIn]);

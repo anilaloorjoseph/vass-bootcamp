@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { registerUser } from "../../../redux/slices/userSlice";
-import { ROLE } from "../../constants/constants";
+import { isUser } from "../../constants/constants";
 
 export default function Register({ locale }: { locale: string }) {
   const [error, setError] = useState<string>();
@@ -36,7 +36,7 @@ export default function Register({ locale }: { locale: string }) {
             setError("passwords are not matching");
             return false;
           }
-          const roles = [ROLE.USER];
+          const roles = [isUser];
           dispatch(
             registerUser({
               username,

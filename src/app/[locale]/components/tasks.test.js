@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import task from "../../../redux/slices/taskSlice";
 import auth from "../../../redux/slices/authSlice";
-import { ROLE } from "../../constants/constants";
+import { isAdmin, isManager } from "../../constants/constants";
 
 const initialTasks = [
   {
@@ -91,7 +91,7 @@ describe("Tasks Component - Group access control", () => {
   });
 
   it("admin should see all tasks", async () => {
-    const store = createStore(ROLE.ADMIN);
+    const store = createStore(isAdmin);
     await act(async () => {
       render(
         <Provider store={store}>
@@ -112,7 +112,7 @@ describe("Tasks Component - Group access control", () => {
   });
 
   it("manager should see all tasks", async () => {
-    const store = createStore(ROLE.MANAGER);
+    const store = createStore(isManager);
 
     await act(async () => {
       render(
@@ -134,7 +134,7 @@ describe("Tasks Component - Group access control", () => {
   });
 
   it("regular user should only see tasks from their group", async () => {
-    const store = createStore(ROLE.USER, "user1", "groupA");
+    const store = createStore(isUser, "user1", "groupA");
 
     await act(async () => {
       render(
@@ -155,7 +155,7 @@ describe("Tasks Component - Group access control", () => {
   });
 
   it("should show no tasks message when user has no access to any tasks", async () => {
-    const store = createStore(ROLE.USER, "user3", "groupC");
+    const store = createStore(isUser, "user3", "groupC");
 
     await act(async () => {
       render(

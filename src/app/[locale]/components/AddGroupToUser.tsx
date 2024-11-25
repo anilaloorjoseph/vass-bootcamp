@@ -10,7 +10,7 @@ import { AppDispatch } from "../../../redux/store";
 import { getAllGroups, selectGroup } from "../../../redux/slices/groupSlice";
 import { addUserGroup, getUser } from "../../../redux/slices/userSlice";
 import { AddGroupFormData } from "../types/typescript";
-import { ROLE } from "../../constants/constants";
+import { isAdmin } from "../../constants/constants";
 import CustomeSelect from "./CustomeSelect";
 
 export default function AddGroupToUser({
@@ -49,7 +49,7 @@ export default function AddGroupToUser({
     if (isLoggedIn === null) {
       router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+    if (isLoggedIn?.roles.includes(isAdmin) === false) {
       router.push(`/task-list`);
     }
     dispatch(getAllGroups());

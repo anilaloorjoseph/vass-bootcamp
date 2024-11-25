@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { type UserData } from "../types/typescript";
-import { ROLE } from "../../constants/constants";
+import { isUser } from "../../constants/constants";
 
 const userSchema = new mongoose.Schema<UserData>({
   username: {
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema<UserData>({
   roles: {
     type: [String],
     required: false,
-    default: [ROLE.USER],
+    default: [isUser],
   },
   group: {
     type: mongoose.Schema.Types.ObjectId,

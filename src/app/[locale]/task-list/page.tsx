@@ -6,7 +6,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../../../redux/slices/authSlice";
-import { ROLE } from "../../constants/constants";
+import { isAdmin, isManager } from "../../constants/constants";
 import { TaskData } from "../types/typescript";
 
 export default function page({
@@ -32,12 +32,12 @@ export default function page({
       router.push(`/`);
     }
     if (
-      isLoggedIn?.roles.includes(ROLE.ADMIN) ||
-      isLoggedIn?.roles.includes(ROLE.MANAGER)
+      isLoggedIn?.roles.includes(isAdmin) ||
+      isLoggedIn?.roles.includes(isManager)
     ) {
       setAuthorisedUser(true);
     }
-    if (isLoggedIn?.roles.includes(ROLE.ADMIN)) {
+    if (isLoggedIn?.roles.includes(isAdmin)) {
       setAdmin(true);
     }
   }, [isLoggedIn]);

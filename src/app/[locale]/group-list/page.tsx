@@ -6,7 +6,7 @@ import { GroupData } from "../types/typescript";
 import { selectAuth } from "../../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { ROLE } from "../../constants/constants";
+import { isAdmin } from "../../constants/constants";
 
 export default function page({
   params,
@@ -23,7 +23,7 @@ export default function page({
     if (isLoggedIn === null) {
       router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+    if (isLoggedIn?.roles.includes(isAdmin) === false) {
       router.push(`/task-list`);
     }
     const loadInitialGroups = async () => {

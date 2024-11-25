@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect } from "react";
-import { ROLE } from "../../constants/constants";
+import { isAdmin } from "../../constants/constants";
 import CreateTask from "../components/CreateTask";
 import { selectAuth } from "../../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
@@ -21,7 +21,7 @@ export default function page({
     if (isLoggedIn === null) {
       router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+    if (isLoggedIn?.roles.includes(isAdmin) === false) {
       router.push(`/task-list`);
     }
   }, [isLoggedIn]);

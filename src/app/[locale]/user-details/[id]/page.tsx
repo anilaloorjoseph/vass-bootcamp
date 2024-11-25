@@ -13,7 +13,7 @@ import {
 } from "../../../../redux/slices/userSlice";
 import AddRoleToUser from "../../components/AddRoleToUser";
 import AddGroupToUser from "../../components/AddGroupToUser";
-import { ROLE } from "../../../constants/constants";
+import { isAdmin, isUser } from "../../../constants/constants";
 
 export default function page({
   params,
@@ -30,7 +30,7 @@ export default function page({
   const t = useTranslations("translations");
 
   const handleDeleteRole = async (userId: string, role: string) => {
-    if (role === ROLE.USER || role === ROLE.ADMIN) {
+    if (role === isUser || role === isAdmin) {
       setWarning(`${role} can't be deleted!`);
       return false;
     }

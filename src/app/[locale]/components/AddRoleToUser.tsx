@@ -2,13 +2,13 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { selectUser } from "../../../redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AppDispatch } from "../../../redux/store";
 import { addUserRole } from "../../../redux/slices/userSlice";
 import { selectAuth } from "../../../redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { getAllGroups } from "../../../redux/slices/groupSlice";
-import { ROLE } from "../../constants/constants";
+import { isAdmin, isManager, isUser } from "../../constants/constants";
 import CustomeSelect from "./CustomeSelect";
 
 export default function AddRoleToUser({
@@ -49,7 +49,7 @@ export default function AddRoleToUser({
     if (isLoggedIn === null) {
       router.push(`/`);
     }
-    if (isLoggedIn?.roles.includes(ROLE.ADMIN) === false) {
+    if (isLoggedIn?.roles.includes(isAdmin) === false) {
       router.push(`/task-list`);
     }
     dispatch(getAllGroups());
@@ -64,8 +64,8 @@ export default function AddRoleToUser({
           <div className="flex flex-col">
             <CustomeSelect
               options={[
-                { value: ROLE.USER, label: t("User_Default") },
-                { value: ROLE.MANAGER, label: t("Manager") },
+                { value: isUser, label: t("User_Default") },
+                { value: isManager, label: t("Manager") },
               ]}
               name="role"
               control={control}

@@ -6,13 +6,13 @@ import { logout, selectAuth } from "../../../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../redux/store";
 import { persistor } from "../../../redux/store";
-import { ROLE } from "../../constants/constants";
+import { isAdmin } from "../../constants/constants";
 
 export default function Navigation({ locale }: { locale: string }) {
   const { isLoggedIn } = useSelector(selectAuth);
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = Boolean(isLoggedIn?._id);
-  const isAdmin = isAuthenticated && isLoggedIn.roles.includes(ROLE.ADMIN);
+  const isAdministrator = isAuthenticated && isLoggedIn.roles.includes(isAdmin);
   const t = useTranslations("translations");
   const pathname = usePathname();
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function Navigation({ locale }: { locale: string }) {
 
   const AuthenticatedLinks = () => (
     <>
-      {isAdmin && (
+      {isAdministrator && (
         <Link
           href={`/create-task`}
           className="p-2 font-bold hover:text-sky-600"
@@ -41,12 +41,12 @@ export default function Navigation({ locale }: { locale: string }) {
       <Link href={`/task-list`} className="p-2 font-bold hover:text-sky-600">
         {t("Task_List")}
       </Link>
-      {isAdmin && (
+      {isAdministrator && (
         <Link href={`/user-list`} className="p-2 font-bold hover:text-sky-600">
           {t("Users_List")}
         </Link>
       )}
-      {isAdmin && (
+      {isAdministrator && (
         <Link href={`/group-list`} className="p-2 font-bold hover:text-sky-600">
           {t("Group")}
         </Link>
