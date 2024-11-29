@@ -1,45 +1,56 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { createTask } from "../actions/actions";
+import { updateTask, getTask } from "../../actions/actions";
+import { use, useEffect, useState } from "react";
+import { ITask } from "../../types/typescript";
+import { useRouter } from "next/navigation";
 
-export default function CreateTask() {
-  const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
+export default function page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const [task, setTask] = useState<ITask>();
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      type: "",
-      createdOn: "",
-      status: "",
+      title: task?.title,
+      description: task?.description,
+      type: task?.type,
+      createdOn: task?.createdOn,
+      status: task?.status,
     },
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      setTasksUpdated(false);
-    }, 4000);
-  }, [tasksUpdated]);
+    async function fetchTask() {
+      try {
+        const data = await getTask(id);
+        setTask(data);
+        reset(data);
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+      }
+    }
+
+    fetchTask();
+  }, [id, reset]);
 
   return (
     <div className="container w-2/4 m-auto">
       <form
         onSubmit={handleSubmit(async (data) => {
-          let taskId = await createTask(data);
-          if (taskId) setTasksUpdated(true);
+          await updateTask(data);
+          router.push("/tasklist");
         })}
       >
-        <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
-          <h2 className="text-xl font-medium text-center">Create Task</h2>
+        <div className="bg-blue-100 flex flex-col items-center py-4 mt-4">
+          <h2 className="text-xl font-medium text-center">Update Task</h2>
           <input
             type="text"
-            name="title"
             {...register("title", {
               required: "This is required",
               maxLength: {
@@ -54,7 +65,6 @@ export default function CreateTask() {
             {errors.title?.message}
           </small>
           <textarea
-            name="description"
             {...register("description", {
               required: "This is required",
               maxLength: 200,
@@ -67,7 +77,6 @@ export default function CreateTask() {
           </small>
           <input
             type="text"
-            name="type"
             {...register("type", {
               required: "This is required",
               maxLength: 20,
@@ -80,7 +89,6 @@ export default function CreateTask() {
           </small>
           <input
             type="date"
-            name="createdOn"
             {...register("createdOn", {
               required: "This is required",
               maxLength: 30,
@@ -92,7 +100,6 @@ export default function CreateTask() {
             {errors.createdOn?.message}
           </small>
           <select
-            name="status"
             {...register("status", {
               required: "This is required",
             })}
@@ -108,21 +115,12 @@ export default function CreateTask() {
           </small>
           <button
             type="submit"
-            className="bg-slate-500 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
+            className="bg-blue-400 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
           >
-            Create Task
+            Update
           </button>
         </div>
       </form>
-      {tasksUpdated && (
-        <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
-          New Task has been added{" "}
-          <Link href="/tasklist" className="text-cyan-300">
-            Click here
-          </Link>
-          to the Task list
-        </div>
-      )}
     </div>
   );
 }
