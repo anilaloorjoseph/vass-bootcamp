@@ -1,41 +1,55 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { importDummyUsers } from "../actions/actions";
-import { type UserData } from "../types/typescript";
-import { useTasks } from "../context/useContext";
+import { use, useEffect, useState } from "react";
+import { UserData, type TaskData } from "../../types/typescript";
+import { useRouter } from "next/navigation";
+import { useTasks } from "../../context/useContext";
 
-export default function CreateTask() {
-  const [tasksUpdated, setTasksUpdated] = useState<boolean>(false);
-  const [users, setUsers] = useState<UserData[]>([]);
+export default function page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const [task, setTask] = useState<TaskData>();
+  const router = useRouter();
+  const [users, setUsers] = useState<UserData[]>();
+  const { isLoggedIn, isLoading } = useTasks();
+  const { getTask, updateTask, getDummyUsers } = useTasks();
 
-  const { createTask, getDummyUsers } = useTasks();
+  useEffect(() => {
+    if (!isLoading && isLoggedIn === null) {
+      router.push("/");
+    }
+  }, [isLoggedIn, isLoading]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      type: "",
-      createdOn: "",
-      status: "",
-      assignedTo: "",
+      title: task?.title,
+      description: task?.description,
+      type: task?.type,
+      createdOn: task?.createdOn,
+      status: task?.status,
+      assignedTo: task?.assignedTo,
     },
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      setTasksUpdated(false);
-    }, 4000);
-  }, [tasksUpdated]);
+    async function fetchTask() {
+      try {
+        const data = await getTask(id);
+        setTask(data);
+        reset(data);
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+      }
+    }
+    fetchTask();
+  }, [id, reset]);
 
   useEffect(() => {
     async function fetchData() {
-      await importDummyUsers();
       let data = await getDummyUsers();
       setUsers(data);
     }
@@ -46,12 +60,12 @@ export default function CreateTask() {
     <div className="container w-2/4 m-auto">
       <form
         onSubmit={handleSubmit(async (data) => {
-          let taskId = await createTask(data);
-          if (taskId) setTasksUpdated(true);
+          await updateTask(data);
+          router.push("/tasklist");
         })}
       >
-        <div className="bg-slate-100 flex flex-col items-center py-4 mt-4">
-          <h2 className="text-xl font-medium text-center">Create Task</h2>
+        <div className="bg-blue-100 flex flex-col items-center py-4 mt-4">
+          <h2 className="text-xl font-medium text-center">Update Task</h2>
           <input
             type="text"
             {...register("title", {
@@ -117,12 +131,11 @@ export default function CreateTask() {
             {errors.status?.message}
           </small>
           <select
-            {...register("assignedTo", {
-              required: "This is required",
-            })}
+            {...register("assignedTo", {})}
             className="w-5/6 p-2 my-2 border-zinc-400 border rounded"
+            defaultValue={task?.assignedTo?._id ?? ""}
           >
-            <option value="">--select user--</option>
+            <option value="">UNASSIGNED</option>
             {users &&
               users.map(({ username, _id }, index) => (
                 <option key={index} value={_id}>
@@ -130,26 +143,14 @@ export default function CreateTask() {
                 </option>
               ))}
           </select>
-          <small className="block text-center text-red-950">
-            {errors.assignedTo?.message}
-          </small>
           <button
             type="submit"
-            className="bg-slate-500 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
+            className="bg-blue-400 w-5/6 text-white hover:drop-shadow-xl hover:bg-slate-200  my-2 py-2 rounded"
           >
-            Create Task
+            Update
           </button>
         </div>
       </form>
-      {tasksUpdated && (
-        <div className="container text-center bg-blue-50 w-2/4 mx-auto p-4 border mt-2">
-          New Task has been added
-          <Link href="/tasklist" className="text-cyan-300">
-            Click here
-          </Link>
-          to the Task list
-        </div>
-      )}
     </div>
   );
 }
